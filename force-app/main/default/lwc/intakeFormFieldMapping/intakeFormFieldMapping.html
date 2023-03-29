@@ -1,0 +1,735 @@
+<template>
+    <template if:true={isVisible}>
+        <div class="slds-m-bottom_small">
+        <template if:true={isAddress}>
+            <template if:true={isEditMode}>
+                <div class={computeEditWrapperClasses}>
+                    <div>
+                        <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                        <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                    </div>
+                        <lightning-input
+                            data-id={filteredFieldId}
+                            data-type={filteredFieldType}
+                            data-label="street_1"
+                            type="text"
+                            label="Street Address 1"
+                            value={formattedStreet1}
+                            required={isRequired}
+                            onchange={handleFieldChange}
+                            onblur={handleFieldChange}
+                            data-field
+                            data-address
+                        ></lightning-input>
+                    </div>
+                <div class={computeEditWrapperClasses}>
+                    <lightning-input
+                        data-id={filteredFieldId}
+                        data-type={filteredFieldType}
+                        data-label="street_2"
+                        type="text"
+                        label="Street Address 2"
+                        value={formattedStreet2}
+                        onchange={handleFieldChange}
+                        onblur={handleFieldChange}
+                        data-field
+                        data-address
+                    ></lightning-input>
+                </div>
+                <div class={computeEditWrapperClasses}>
+                    <lightning-input
+                        data-id={filteredFieldId}
+                        data-type={filteredFieldType}
+                        data-label="city"
+                        type="text"
+                        label="City"
+                        value={formattedCity}
+                        required={isRequired}
+                        onchange={handleFieldChange}
+                        onblur={handleFieldChange}
+                        data-field
+                        data-address
+                    ></lightning-input>
+                </div>
+                <div class={computeEditWrapperClasses}>
+                    <lightning-combobox
+                        data-id={filteredFieldId}
+                        data-type={filteredFieldType}
+                        data-label="country"
+                        label="Country"
+                        options={countryPicklistOptions}
+                        value={formattedCountry}
+                        required={isRequired}
+                        onchange={handleFieldChange}
+                        onblur={handleFieldChange}
+                        data-field
+                        data-address
+                    ></lightning-combobox>
+                </div>
+                <div class={computeEditWrapperClasses}>
+                    <lightning-combobox
+                        data-id={filteredFieldId}
+                        data-type={filteredFieldType}
+                        data-label="state"
+                        label="State / Province"
+                        options={selectedRegions}
+                        value={formattedState}
+                        required={isRequired}
+                        onchange={handleFieldChange}
+                        onblur={handleFieldChange}
+                        data-field
+                        data-address
+                    ></lightning-combobox>
+                </div>
+                <div class={computeEditWrapperClasses}>
+                    <lightning-input
+                        data-id={filteredFieldId}
+                        data-type={filteredFieldType}
+                        data-label="zip_code"
+                        type="text"
+                        label="Zip Code"
+                        value={formattedZip}
+                        required={isRequired}
+                        onchange={handleFieldChange}
+                        onblur={handleFieldChange}
+                        data-field
+                        data-address
+                    ></lightning-input>
+                </div>
+            </template>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-address
+                        if:false={isEditMode}
+                        id={filteredFieldId}
+                        street={combinedStreets}
+                        city={formattedCity}
+                        country={formattedCountry}
+                        province={formattedState}
+                        postal-code={formattedZip}
+                        class="slds-m-top_x-small slds-m-bottom_x-small"
+                        disabled
+                    >
+                    </lightning-formatted-address>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isFile}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div>
+                    <span if:true={isRequired} class="slds-required">*</span>
+                    <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                    <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                </div>
+            <!-- /* 21-03-2023*/ -->
+                <c-document-upload
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    attachment-files={attachmentFilesOnEdit}
+                    onfileuploaded={handleFileUpload}
+                    onfileremoved={handleFileRemoved}
+                    isrequired={isRequired}
+                    is-multiple-files={multipleFiles}
+                    object-api-name={objectApiName}
+                    record-id={recordId}
+                    is-edit-mode={_isUpdateable}
+                    allowed-file-type-rule={allowedFileTypeRule}
+                    allowed-file-types={allowedFileTypes}
+                    data-fieldfile
+                ></c-document-upload>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <template for:each={showAttachmentFiles} for:item="file">
+                <div key={file}>
+                    <lightning-icon icon-name={file.fileIcon} class="slds-m-right_xx-small" size="x-small"> </lightning-icon>
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={file.fileName}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-text>
+                </div>
+                </template>
+                <lightning-button-icon
+                    if:false={hidePencilIcon}
+                    onclick={handleEditMode}
+                    class="ticket-form-element_icon"
+                    icon-name="utility:edit"
+                    variant="bare"
+                ></lightning-button-icon>
+            </div>
+        </template>
+        <template if:true={isDate}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-input
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    type="date"
+                    label={filteredFieldDescription}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-date-time
+                        id={filteredFieldId}
+                        value={filteredFieldValue}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-date-time>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isText}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-input
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    type="text"
+                    label={filteredFieldDescription}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={filteredFieldValue}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-text>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isEmail}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-input
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    type="email"
+                    label={filteredFieldDescription}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={filteredFieldValue}
+                        class="slds-form-element__control ticket-form-element_field"
+                        linkify
+                    ></lightning-formatted-text>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isCurrency}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-combobox
+                            label="Currency"
+                            data-id={filteredFieldId}
+                            data-type={filteredFieldType}
+                            data-label="currency"
+                            options={currencyOptions}
+                            value={currency}
+                            required={isRequired}
+                            onchange={handleFieldChange}
+                            onblur={handleFieldChange}
+                            data-field
+                            data-currency
+                        ></lightning-combobox>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input
+                            data-id={filteredFieldId}
+                            data-type={filteredFieldType}
+                            data-label="amount"
+                            type="number"
+                            step="0.01"
+                            label="Amount"
+                            value={amount}
+                            required={isRequired}
+                            onchange={handleFieldChange}
+                            onblur={handleFieldChange}
+                            data-field
+                            data-currency
+                        ></lightning-input>
+                    </div>
+                </div>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <!-- <label class="slds-form-element__label" for={filteredFieldId}>{filteredFieldLabel}</label> -->
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div if:false={isEditMode} class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-formatted-text
+                            id={filteredFieldId}
+                            value={currency}
+                            class="slds-form-element__control ticket-form-element_field"
+                        ></lightning-formatted-text>
+                    </div>
+                    <div class="slds-col">
+                        <div class="ticket-form-element_input-wrapper">
+                            <lightning-formatted-number
+                                id={filteredFieldId}
+                                value={amount}
+                                class="slds-form-element__control ticket-form-element_field"
+                            ></lightning-formatted-number>
+                            <lightning-button-icon
+                                if:false={hidePencilIcon}
+                                onclick={handleEditMode}
+                                class="ticket-form-element_icon"
+                                icon-name="utility:edit"
+                                variant="bare"
+                            ></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template if:true={isNumber}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-input
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    type="number"
+                    step={parseNumericStep}
+                    label={filteredFieldDescription}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-number
+                        id={filteredFieldId}
+                        value={filteredFieldValue}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-number>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isPercent}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-input
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    type="number"
+                    formatter="percent-fixed"
+                    step={parseNumericStep}
+                    label={filteredFieldDescription}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-number
+                        id={filteredFieldId}
+                        value={filteredFieldValue}
+                        format-style="percent-fixed"
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-number>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isTextArea}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-textarea
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    label={filteredFieldDescription}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-textarea>
+            </div>
+            <div if:false={isEditMode} class="slds-grid slds-grid_vertical-align-end slds-form-element_readonly">
+                <div class="slds-col slds-p-left_none ticket-form-element__full-width">
+                    <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                    <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                    <p id={filteredFieldId} class="slds-form-element__control ticket-form-element_field">
+                        {filteredFieldValue}
+                    </p>
+                </div>
+                <div class="slds-col slds-p-right_none">
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="slds-button slds-button_icon slds-m-bottom_xx-small ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isRadio}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <lightning-radio-group
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    type="radio"
+                    
+                    value={filteredFieldValue}
+                    options={options}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-radio-group>
+                <lightning-input
+                    if:true={enableOtherOption}
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    label={createOptionsLabel}
+                    value={createOptionsValue}
+                    type="text"
+                    onchange={handleFieldChange}
+                    onkeydown={handleFieldChange}
+                    data-enable-create-opt={enableOtherOption}
+                    data-field
+                    required={enableOtherOption}
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={createOptionsValue}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-text>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isMultiSelect}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <lightning-dual-listbox
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    size="3"
+                    options={options}
+                    value={multiValues}
+                    source-label="Available"
+                    selected-label="Selected"
+                    required={isRequired}
+                    onchange={handleMultiFieldChange}
+                    data-field
+                >
+                </lightning-dual-listbox>
+                <lightning-input
+                    if:true={enableCreateOptions}
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    label={createOptionsLabel}
+                    value={createOptionsValue}
+                    type="text"
+                    onblur={handleInputMultiFieldChange}
+                    onchange={handleInputMultiFieldChange}
+                    data-enable-create-opt={enableCreateOptions}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={multiValues}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-text>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isCheckbox}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <lightning-dual-listbox
+                    data-id={filteredFieldId}
+                    label=""
+                    data-type={filteredFieldType}
+                    size="3"
+                    options={options}
+                    value={checkboxSelectedValues}
+                    source-label="Available"
+                    selected-label="Selected"
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    data-field
+                >
+                </lightning-dual-listbox>
+                <lightning-input
+                    if:true={renderCheckboxInput}
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    label={createOptionsLabel}
+                    value={createOptionsValue}
+                    type="text"
+                    onchange={handleFieldChange}
+                    data-enable-create-opt={enableOtherOptionForCheckbox}
+                    data-field
+                    required={enableOtherOption}
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={multiValues}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-text>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isSingleSelect}>
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <lightning-combobox
+                    label={filteredFieldDescription}
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    options={options}
+                    value={filteredFieldValue}
+                    required={isRequired}
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-field
+                ></lightning-combobox>
+                <lightning-input
+                    if:true={enableCreateOptions}
+                    data-id={filteredFieldId}
+                    data-type={filteredFieldType}
+                    label={createOptionsLabel}
+                    value={createOptionsValue}
+                    type="text"
+                    onchange={handleFieldChange}
+                    onblur={handleFieldChange}
+                    data-enable-create-opt={enableCreateOptions}
+                    data-field
+                ></lightning-input>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="ticket-form-element_input-wrapper">
+                    <lightning-formatted-text
+                        id={filteredFieldId}
+                        value={filteredFieldValue}
+                        class="slds-form-element__control ticket-form-element_field"
+                    ></lightning-formatted-text>
+                    <lightning-button-icon
+                        if:false={hidePencilIcon}
+                        onclick={handleEditMode}
+                        class="ticket-form-element_icon"
+                        icon-name="utility:edit"
+                        variant="bare"
+                    ></lightning-button-icon>
+                </div>
+            </div>
+        </template>
+        <template if:true={isTimePeriod}>
+
+            <div if:true={isEditMode} class={computeEditWrapperClasses}>
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-combobox
+                            label="Time Period"
+                            data-id={filteredFieldId}
+                            data-type={filteredFieldType}
+                            data-label="period"
+                            options={options}
+                            value={timePeriodVal}
+                            required={isRequired}
+                            onchange={handleFieldChange}
+                            onblur={handleFieldChange}
+                            data-field
+                            data-time
+                        ></lightning-combobox>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input
+                            label="Unit Value"
+                            data-id={filteredFieldId}
+                            data-type={filteredFieldType}
+                            data-label="amount"
+                            type="number"
+                            value={amount}
+                            required={isRequired}
+                            onchange={handleFieldChange}
+                            onblur={handleFieldChange}
+                            data-field
+                            data-time
+                        ></lightning-input>
+                    </div>
+                </div>
+            </div>
+            <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+                <div class="slds-truncate"><b>{filteredFieldLabel}</b></div>
+                <p class="slds-text-body_small">{filteredFieldDescription}</p>
+                <div if:false={isEditMode} class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning-formatted-text
+                            id={filteredFieldId}
+                            value={timePeriod}
+                            class="slds-form-element__control ticket-form-element_field"
+                        ></lightning-formatted-text>
+                    </div>
+                    <div class="slds-col">
+                        <div class="ticket-form-element_input-wrapper">
+                            <lightning-formatted-number
+                                id={filteredFieldId}
+                                value={amount}
+                                class="slds-form-element__control ticket-form-element_field"
+                            ></lightning-formatted-number>
+                            <lightning-button-icon
+                                if:false={hidePencilIcon}
+                                onclick={handleEditMode}
+                                class="ticket-form-element_icon"
+                                icon-name="utility:edit"
+                                variant="bare"
+                            ></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isAllowMultipleSearch}>
+                <c-evisort-multi-select-search-input
+                    is-edit-mode={isEditMode}
+                    has-ticket-id={hasTicketId}
+                    workflow-id={workflowId}
+                    question={question}
+                    onvalidatemultiselect={handleValidateSelected}
+                    onselectchange={handleSelectionChange}>
+                </c-evisort-multi-select-search-input>
+        </template>
+
+        <template if:true={isAllowSingleSearch}>
+                <c-evisort-single-select-search-input
+                is-edit-mode={isEditMode}
+                has-ticket-id={hasTicketId}
+                workflow-id={workflowId} 
+                question={question}
+                onvalidatesingleselect={handleValidateSelected}
+                onselectchange={handleSelectionChange}>
+                </c-evisort-single-select-search-input>
+        </template>
+        </div>
+    </template>
+</template>

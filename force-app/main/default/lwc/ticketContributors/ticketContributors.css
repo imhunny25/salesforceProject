@@ -1,0 +1,16 @@
+.participants {
+    margin-bottom: 1rem;
+}
+
+.participants li .name {
+    margin-left: 1rem;
+    font-size: 0.825rem;
+    color: #706e6b;
+    padding-top: 0.25rem;
+}
+
+.participants h2 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}

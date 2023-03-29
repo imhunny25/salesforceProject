@@ -1,0 +1,74 @@
+<template>
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+        <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+            <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                <c-evisort-Icon cls="evisort-svg"></c-evisort-Icon>
+                <h3 class="slds-text-heading_medium" style="margin-bottom: 5px;">{label.adminAuthenticationTab}</h3>
+            </div>
+            <p class="slds-text-body_regular">
+                {label.adminAuthenticationBody}&nbsp;
+                <a
+                    href="https://support.evisort.com/hc/en-us/articles/360060522013-Integration-Overview-Salesforce"
+                    class="slds-truncate"
+                    title={label.adminLearnMore}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >{label.adminHere}</a
+                >
+            </p>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center slds-var-p-bottom_xx-large minimum-width">
+        <div class="slds-col">
+            <lightning-button
+                label={label.adminCheckValidation}
+                variant="brand"
+                icon-name="utility:new_window"
+                title="Non-primary action"
+                onclick={handleAuth}
+                class="slds-var-m-left_x-small"
+            ></lightning-button>
+        </div>
+    </div>
+
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-m-bottom_small slds-p-horizontal_x-small minimum-width">
+            <lightning-card title={label.adminAuthFirstStepTitle} class="slds-m-around_none slds-p-around_none">
+                <div slot="actions">
+                    <lightning-button
+                        label={label.adminAuthFirstStepActionTitle}
+                        icon-name="utility:new_window"
+                        class="slds-var-m-left_small"
+                        onclick={launchEvisortLogin}
+                    >
+                    </lightning-button>
+                </div>
+                <div
+                    class="slds-grid slds-grid_vertical slds-var-p-around_medium slds-theme_shade slds-var-m-bottom_large"
+                >
+                    <img src={apiSetupGifUrl} title={label.adminAuthFirstStepImageTitle} />
+                </div>
+            </lightning-card>
+        </div>
+
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-horizontal_x-small minimum-width">
+            <lightning-card title={label.adminAuthSecondStepTitle} class="slds-m-around_none slds-p-around_none">
+                <div slot="actions">
+                    <lightning-button
+                        label={label.adminAuthSecondStepActionTitle}
+                        icon-name="utility:new_window"
+                        class="slds-var-m-left_small"
+                        onclick={launchSetupNamedCredentials}
+                    >
+                    </lightning-button>
+                </div>
+                <div
+                    class="slds-grid slds-grid_vertical slds-var-p-around_medium slds-theme_shade slds-var-m-bottom_large"
+                >
+                    <img src={namedCredentialGifUrl} title={label.adminAuthSecondStepImageTitle} />
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

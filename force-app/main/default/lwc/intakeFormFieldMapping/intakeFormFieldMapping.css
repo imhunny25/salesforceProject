@@ -1,0 +1,27 @@
+.ticket-form-element {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.ticket-form-element_field {
+    min-height: 25px;
+}
+
+.ticket-form-element_icon {
+    align-self: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-form-element_input-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ticket-form-element__full-width {
+    width: 100%;
+}
+
+.input-wrapper_edit-state {
+    background-color: rgb(250, 255, 189);
+}

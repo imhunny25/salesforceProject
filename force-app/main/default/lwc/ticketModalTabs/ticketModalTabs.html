@@ -1,0 +1,157 @@
+<template>
+    <lightning-tabset>
+        <lightning-tab label={labels.ticketTabWorkflow} class="content-area">
+            <lightning-spinner if:true={isLoading} variant="brand" size="medium"></lightning-spinner>
+            <div
+                if:true={error}
+                class="slds-m-bottom_medium slds-notify slds-notify_alert slds-alert_error"
+                role="alert"
+            >
+                <h2>{error}</h2>
+            </div>
+            <c-ticket-tab-workflow
+                if:true={ticket}
+                document-info={documentInfo}
+                file-info={fileInfo}
+                current-stage={currentStage}
+                current-ticket-id={currentTicketId}
+                ticket-status={ticketStatus}
+                ticket-evisort-record-id={ticketRecordId}
+                onupdatecomponent={refreshComponent}
+                accepted-file-types={acceptedFormats}
+                ticket-record-id={ticketRecordId}
+            ></c-ticket-tab-workflow
+        ></lightning-tab>
+        <lightning-tab label={labels.ticketTabFormInfo} class="content-area">
+            <lightning-spinner if:true={isLoading} variant="brand" size="medium"></lightning-spinner>
+            <div
+                if:true={error}
+                class="slds-m-bottom_medium slds-notify slds-notify_alert slds-alert_error"
+                role="alert"
+            >
+                <h2>{error}</h2>
+            </div>
+            <template if:true={hasSections}>
+                <div class="form-wrapper slds-p-around_medium">
+                    <lightning-spinner if:true={isSavingEdits} variant="brand" size="medium"></lightning-spinner>
+                    <template for:each={formSections} for:item="section">
+                        <section class="slds-m-bottom_large section-border_bottom" key={section.id}>
+                            <div>
+                                <p class="slds-text-heading_medium ">{section.name}</p>
+                                <p class="slds-p-bottom_small slds-text-body_small">{section.description}</p>
+                            </div>
+                            <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                                <template for:each={section.questions} for:item="question">
+                                    <div key={question.field.id} class={computeClasses}>
+                                        <c-intake-form-field-mapping
+                                            data-field-id={question.field.id}
+                                            is-ticket-completed={isCompleted}
+                                            is-updateable={isUpdateable}
+                                            read-only={isReadOnly}
+                                            is-view-ticket={isViewTicketComp}
+                                            has-ticket-id={ticketRecordId}
+                                            workflow-id={retrieveWorkflowId} 
+                                            question={question}
+                                            onattachmentupload={handleAttachmentUpload}
+                                            onintakefieldchange={handleFieldChange}
+                                            field-visibility={decideVisibility}
+                                            onattachmentremoved={handleAttachmentUpload}
+                                            record-id={recordId}
+                                            object-api-name={objectApiName}
+                                        ></c-intake-form-field-mapping>
+                                    </div>
+                                </template>
+                            </div>
+                        </section>
+                    </template>
+                </div>
+                <div if:true={showUnsavedError} class="wrapper_unsaved-changes slds-align_absolute-center">
+                    <section
+                        class="slds-popover slds-popover_error slds-nubbin_bottom slds-popover_medium"
+                        role="dialog"
+                    >
+                        <button
+                            class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close slds-button_icon-inverse"
+                            title="Close dialog"
+                        >
+                            <lightning-icon
+                                class="icon_unsaved-error"
+                                size="small"
+                                icon-name="utility:close"
+                                onclick={handleCloseError}
+                            ></lightning-icon>
+                        </button>
+                        <header class="slds-popover__header">
+                            <div class="slds-media slds-media_center slds-has-flexi-truncate">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-utility-error">
+                                        <lightning-icon
+                                            class="icon_unsaved-error"
+                                            size="medium"
+                                            icon-name="utility:error"
+                                        ></lightning-icon>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <h4
+                                        class="slds-truncate slds-text-heading_medium"
+                                        title={labels.ticketModalUnsavedEditsHeader}
+                                    >
+                                        {labels.ticketModalUnsavedEditsHeader}
+                                    </h4>
+                                </div>
+                            </div>
+                        </header>
+                        <div class="slds-popover__body">
+                            <p>{labels.ticketModalUnsavedEdits}</p>
+                        </div>
+                    </section>
+                </div>
+                <div if:false={isReadOnly} class="slds-card slds-var-p-around_medium editing-controls">
+                    <div class="slds-card__body slds-card__body_inner slds-align_absolute-center">
+                        <lightning-button
+                            label={labels.ticketModalCancelEditBtnLabel}
+                            title="Cancel Editing"
+                            onclick={handleEditingCancel}
+                            class="slds-m-left_x-small"
+                        ></lightning-button>
+                        <lightning-button
+                            variant="brand"
+                            label={labels.ticketModalSaveEditBtnLabel}
+                            title="Save Editing"
+                            onclick={handleEditingSave}
+                            class="slds-m-left_x-small"
+                            disabled={isEditSaveDisabled}
+                        ></lightning-button>
+                    </div>
+                </div>
+            </template>
+        </lightning-tab>
+        <lightning-tab label={labels.ticketTabActivity} class="content-area">
+            <lightning-spinner if:true={showActivityLoading} variant="brand" size="medium"></lightning-spinner>
+            <div
+                if:true={logsError}
+                class="slds-m-bottom_medium slds-notify slds-notify_alert slds-alert_error"
+                role="alert"
+            >
+                <h2>{logsError}</h2>
+            </div>
+            <template if:false={showActivityLoading}>
+                <c-ticket-activity-log activity-data={activityData}></c-ticket-activity-log>
+            </template>
+        </lightning-tab>
+        <lightning-tab label={labels.ticketTabContributors} class="content-area">
+            <lightning-spinner if:true={showContributorsLoading} variant="brand" size="medium"></lightning-spinner>
+            <div
+                if:true={contributorsError}
+                class="slds-m-bottom_medium slds-notify slds-notify_alert slds-alert_error"
+                role="alert"
+            >
+                <h2>{contributorsError}</h2>
+            </div>
+            <template if:false={showContributorsLoading}>
+                <c-ticket-contributors participants={participantData} assignees={assigneeData}></c-ticket-contributors>
+            </template>
+        </lightning-tab>
+    </lightning-tabset>
+</template>

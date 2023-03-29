@@ -1,0 +1,144 @@
+<template>
+    <template if:false={isTicketComplete}>
+    <div class="slds-m-top_x-small slds-m-bottom_x-small">
+        <template if:false={isReassignuser}>
+            <lightning-button  label={label.ticketapprove} onclick={handelTicketApprove} disabled={disableApproveRejectButton}></lightning-button>
+            <lightning-button class="slds-m-left_medium" label={label.ticketReject} onclick={handelTicketReject} disabled={disableApproveRejectButton}></lightning-button>   
+            
+            <lightning-button-menu class="slds-m-left_medium slds-m-bottom_xx-small">
+                <lightning-menu-item value="MenuItemOne" label={label.adminReassign} onclick={handleTicketReassign} ></lightning-menu-item>
+                <lightning-menu-item value="MenuItemTwo" label={label.AdminAssignToMe} onclick={handleTicketAssignToMe} disabled={disableAssignToMeButton} ></lightning-menu-item>
+                <lightning-menu-item value="MenuItemThree" label={label.adminReset} onclick={handleTicketReset} disabled={disableResetButton}></lightning-menu-item>
+            </lightning-button-menu>
+        </template>
+        <template if:true={isReassignuser}>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_4-of-10">
+                    <div class="slds-combobox_container slds-combobox-addon_end slds-m-right_large">
+                        <div
+                            class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_group-right"
+                                role="none">
+                                <input type="search"
+                                    class="slds-input slds-combobox__input slds-has-focus slds-combobox__input-value fieldNameComp input-min-width"
+                                    aria-activedescendant="option0" aria-autocomplete="list"
+                                    aria-controls="listbox-id-23" aria-expanded="true"
+                                    aria-haspopup="listbox" autocomplete="off" role="combobox"
+                                    placeholder="Search..." value={searchInput}
+                                    onclick={handleFieldSearch} onchange={handleFieldSearch}
+                                    onkeydown={handleFieldSearch} oninput={handleFieldSearch}
+                                    onblur={handleSearchBlur} onfocus={handleSearchFocus} disabled={isInputDisabled}>
+
+                                <div class="slds-input__icon-group slds-input__icon-group_right">
+                                    <template if:false={showClose}>
+                                        <button
+                                            class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                            title="Remove selected option" onclick={clearSearchField}>
+                                            <lightning-icon class="slds-col" align="right" vertical
+                                                size="x-small"
+                                                icon-name="utility:close">
+                                            </lightning-icon>
+                                            <span class="slds-assistive-text"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                            <template if:true={isEvisortUserEnable}>
+                                <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                                    role="listbox">
+                                    <template for:each={evisortUser} for:item="user">
+                                        <ul class="slds-listbox slds-listbox_vertical"
+                                            role="presentation" key={user.id}>
+                                            <li role="presentation" class="slds-listbox__item "
+                                                onchange={handlerSelectUser} onclick={handlerSelectUser}
+                                                data-label={user.label}
+                                                data-value={user.value}>
+                                                <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                    role="option">
+                                                    <span
+                                                        class="slds-media__figure slds-listbox__option-icon"></span>
+                                                    <span class="slds-media__body">
+                                                        <span class="slds-truncate"
+                                                            data-name={user.label}>
+                                                            {user.label}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </template>
+                                    <template if:true={isUserNotMatch}>
+                                        <span class="slds-align_absolute-center slds-m-vertical_xx-small">{label.noUserFound}</span>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_3-of-10">
+                    <lightning-button 
+                        class="slds-m-around_xx-small"
+                        variant="neutral"
+                        label={label.adminAssign}
+                        title="Assign"
+                        onclick={handleReassign}
+                        disabled={reassignButtonDisable}
+                        icon-name="utility:check"
+                        >
+                    </lightning-button>
+                    <lightning-button
+                        class="slds-m-around_xx-small"
+                        variant="neutral"
+                        label={label.adminCancel}
+                        title="Re-assign"
+                        onclick={closeReassignHandler}
+                        >
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+    </div>
+    </template>
+    <span class="slds-text-color_error slds-text-title"  aria-live="assertive">{updateTicketError}</span>
+    
+    <div if:true={approvedTicket} >
+        <div class="slds-m-top_x-small slds-m-bottom_x-small">
+            <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+            title="success variant small" size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+            {label.adminCompleted}
+        </div>
+    </div>
+    <div if:true={ticketReject} >
+        <div class="slds-m-top_x-small slds-m-bottom_x-small">
+            <lightning-icon icon-name="utility:close" alternative-text="close!" variant="error"
+            size="xx-small" class="slds-m-right_x-small"></lightning-icon>
+            {label.ticketAdmin_Rejected}
+            <lightning-textarea type="text" variant="label-hidden" class="slds_input_Box_width" value={commentReason} disabled="true" ></lightning-textarea>
+        </div>
+    </div>
+
+<template if:true={isShowModal}>
+    <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01" class="slds-modal slds-fade-in-open slds-modal_large">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title={label.adminClose} onclick={closeShowModal}>
+                    <lightning-icon icon-name="utility:close"
+                    alternative-text="close"
+                    variant="inverse"
+                    size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">{label.adminClose}</span>
+                </button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{ticketActionLabel}</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <lightning-textarea type="text" label={titleCommentBox} placeholder="Add Comments..." onchange={inputComment}></lightning-textarea>
+            </div>
+            <footer class="slds-modal__footer">
+                 <lightning-button label={label.adminCancel} variant="neutral" onclick={closeShowModal} ></lightning-button>
+                <lightning-button label={label.adminConfirm} class="slds-m-left_x-small" variant="brand" onclick={confirmApproveComments} disabled={disableConfirmButton}></lightning-button>
+            </footer>
+        </div>
+    </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+</template>

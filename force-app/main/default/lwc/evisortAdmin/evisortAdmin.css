@@ -1,0 +1,35 @@
+.evisort-tab-summary {
+    max-width: 50vw;
+}
+
+.evisort-sync-table {
+    max-height: 50vh;
+}
+
+.evisort-sync-list {
+    max-height: 50vh;
+    padding-bottom: 100px;
+}
+
+.evisort-svg {
+    max-width: 200px;
+    max-height: 50px;
+}
+
+.flex {
+    display: flex;
+}
+.flex--space-between {
+    justify-content: space-between;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.slds-vertical-tabs__nav-item {
+    pointer-events: none;
+}
+.header-info {
+    cursor: default;
+}

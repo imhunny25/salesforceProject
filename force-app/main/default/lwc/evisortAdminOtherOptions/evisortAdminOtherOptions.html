@@ -1,0 +1,137 @@
+<template>
+    <template if:false={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminOtherOptionsTab}</h3>
+                </div>
+            </div>
+        </div>
+        <div 
+            class="slds-illustration slds-illustration_small slds-p-right_small minimum-width">
+            <img src={noAccessSVG} class="slds-illustration__svg" />
+
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium">{label.adminYouNotAreAuthenticated}</h3>
+                <p>{label.adminNotAuthenticatedInstructions}</p>
+            </div>
+        </div>
+    </template>
+    <template if:true={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminOtherOptionsTab}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminOtherOptionsBody}</p>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                <div class="slds-m-around_small minimum-width">
+                    <lightning-card>
+                        <h3 slot="title">
+                            <lightning-icon
+                                icon-name="doctype:pdf"
+                                size="small"
+                                class="slds-var-m-right_small"
+                            ></lightning-icon>
+                            {label.adminOtherOptionsAdminSetupGuideHeader}
+                        </h3>
+                        <div slot="actions">
+                            <lightning-button
+                                label={label.adminOtherOptionsAdminSetupGuideAction}
+                                icon-name="utility:new_window"
+                                class="slds-var-m-left_small"
+                                onclick={launchAdminSetupGuide}
+                            >
+                            </lightning-button>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical slds-var-p-around_medium slds-var-m-bottom_large">
+                            <p>{label.adminAdminGuideBody}</p>
+                        </div>
+                    </lightning-card>
+                </div>
+                <div class="slds-m-around_small minimum-width">
+                    <lightning-card>
+                        <h3 slot="title">
+                            <lightning-icon
+                                icon-name="standard:people"
+                                size="small"
+                                class="slds-var-m-right_small"
+                            ></lightning-icon>
+                            {label.adminOtherOptionsAssignHeader}
+                        </h3>
+                        <div slot="actions">
+                            <lightning-button
+                                label={label.adminOtherOptionsAssignAction}
+                                icon-name="utility:new_window"
+                                class="slds-var-m-left_small"
+                                onclick={launchSetupPerms}
+                            >
+                            </lightning-button>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical slds-var-p-around_medium slds-var-m-bottom_large">
+                            <p>{label.adminAssignUsersBody}</p>
+                        </div>
+                    </lightning-card>
+                </div>
+            </div>
+
+            <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+                <div class="slds-m-around_small minimum-width">
+                    <lightning-card>
+                        <h3 slot="title">
+                            <lightning-icon
+                                icon-name="standard:report"
+                                size="small"
+                                class="slds-var-m-right_small"
+                            ></lightning-icon>
+                            {label.adminOtherOptionsReportsAndAnalyticsHeader}
+                        </h3>
+                        <div slot="actions">
+                            <lightning-button
+                                label={label.adminOtherOptionsReportsAndAnalyticsAction}
+                                icon-name="utility:new_window"
+                                class="slds-var-m-left_small"
+                                onclick={launchAnalytics}
+                            >
+                            </lightning-button>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical slds-var-p-around_medium slds-var-m-bottom_large">
+                            <p>{label.adminReportsBody}</p>
+                        </div>
+                    </lightning-card>
+                </div>
+                <div class="slds-m-around_small minimum-width">
+                    <lightning-card>
+                        <h3 slot="title">
+                            <lightning-icon
+                                icon-name="standard:custom_notification"
+                                size="small"
+                                class="slds-var-m-right_small"
+                            ></lightning-icon>
+                            {label.adminOtherOptionsNotificationsHeader}
+                        </h3>
+                        <div slot="actions">
+                            <lightning-button
+                                label={label.adminOtherOptionsNotificationsAction}
+                                icon-name="utility:new_window"
+                                class="slds-var-m-left_small"
+                                onclick={launchSetupNotifications}
+                            >
+                            </lightning-button>
+                        </div>
+                        <div class="slds-grid slds-grid_vertical slds-var-p-around_medium slds-var-m-bottom_large">
+                            <p>{label.adminNotificationsBody}</p>
+                        </div>
+                    </lightning-card>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

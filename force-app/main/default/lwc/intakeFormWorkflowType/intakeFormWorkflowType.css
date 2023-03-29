@@ -1,0 +1,28 @@
+.legend-header {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.intake-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.intake-options li {
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 0 0 1rem 0;
+}
+
+.intake-options li:hover {
+    cursor: pointer;
+    background: #fafaf9;
+}
+
+.select {
+    width: 1.75rem;
+    display: inline-block;
+}

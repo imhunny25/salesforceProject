@@ -1,0 +1,21 @@
+:host {
+    --lwc-spacingXxSmall: 0;
+}
+
+.lookup-list {
+    max-height: 225px;
+}
+
+.lookup-item_wrapper {
+    align-items: center;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.lookup-item_icon {
+    margin-left: 0.5rem;
+}
+
+.lookup-list_error {
+    top: 68%;
+}

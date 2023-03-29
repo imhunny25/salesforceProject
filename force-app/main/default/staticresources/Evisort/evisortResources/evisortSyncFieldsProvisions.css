@@ -1,0 +1,6 @@
+.slds-popover_edit .slds-form-element { 
+    padding-left: 6px;
+}
+.slds-popover__body .slds-p-left_xx-small, .slds-p-left--xx-small {
+    padding-left: 0; 
+}

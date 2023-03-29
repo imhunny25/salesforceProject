@@ -1,0 +1,110 @@
+<template>
+    <div class="slds-border_bottom slds-box slds-m-bottom_medium">
+        <div
+            class="slds-col slds-grid slds-wrap slds-grid slds-grid_vertical-align-end slds-var-m-bottom_medium"
+        >
+            <div class="slds-col slds-small-size_1-of-1 slds-medium-size_2-of-4 slds-large-size_3-of-12 slds-m-top_large slds-m-right_small">
+                <c-evisort-select-library-option
+                    object-label={item.objectLabel}
+                    item-id={item.id}
+                    is-disable={item.existingObject}
+                    onlibraryvaluechange={handlelibraryChange}>
+                </c-evisort-select-library-option>
+            </div>
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div
+                            class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+                            aria-expanded="true"
+                            aria-haspopup="listbox"
+                            role="combobox"
+                        >    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <template if:true={item.isLegacy}>
+                <lightning-button
+                    label={label.adminReset}
+                    onclick={removeLibrary}
+                    access-key={item.id}
+                    disabled={item.resetDisabled}
+                    class="slds-m-top_large slds-m-right_small"
+                ></lightning-button>
+                <lightning-button
+                    label={label.adminAddToExport}
+                    onclick={calculateLibraryRow}
+                    access-key={item.id}
+                    disabled={item.calculateDisabled}
+                    class="slds-m-top_large"
+                ></lightning-button>
+            </template>
+                <template if:false={item.isLegacy}>
+                    <lightning-button-icon
+                    icon-name="utility:delete"
+                    alternative-text={label.adminDelete}
+                    title={label.adminDelete}
+                    class="slds-m-top_large"
+                    onclick={removeLibrary}
+                    access-key={item.id}
+                    id={index}
+                ></lightning-button-icon>
+            </template>
+        </div>
+
+        <template if:true={item.showlibrarySection}>
+            <div class="slds-box">
+                <h2><b>{label.adminFileFilter}</b></h2>
+                <c-evisort-filter-criteria-section
+                    sobject-name="ContentVersion"
+                    fields-wrapper={fieldsWrapper}
+                    rows-data={item.fileFilterBody}
+                    data-id={item.id}
+                    onupdaterows={handleLibraryFileUpdatedRow}
+                    rows-disable={item.calculateDisabled} 
+                    >
+                </c-evisort-filter-criteria-section>
+            </div>
+        </template>
+        <template if:true={item.isLegacy}>
+            <template if:true={item.showInfo}>
+                <lightning-layout class="slds-grid slds-wrap">
+                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                        <div
+                            class="object-status-box slds-box slds-p-around_medium slds-text-align_center slds-align_absolute-center"
+                        >
+                            <div class="object-status-box-center slds-align_absolute-center slds-m-bottom_x-large">
+                                <div class="slds-text-heading_medium">
+                                    {label.adminStatus}<br />
+                                    {item.status}
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                        <div
+                            class="object-status-box slds-box slds-p-around_medium slds-text-align_center"
+                        >
+                            <div class="object-status-box-center slds-align_absolute-center">
+                                <div>
+                                    <div class="slds-text-heading_medium">
+                                        <lightning-formatted-number value={item.numberOfDocuments}></lightning-formatted-number> {label.adminDocuments}
+                                    </div>
+                                    {label.adminCompleted}: <lightning-formatted-number value={item.completed}></lightning-formatted-number><br/>
+                                    <template if:true={item.hasErrors}>
+                                        {label.adminErrored}: <a href="#" data-index={index} onclick={onErroredClick}><lightning-formatted-number value={item.errored}></lightning-formatted-number></a><br/>
+                                    </template>
+                                    <template if:false={item.hasErrors}>
+                                        {label.adminErrored}: {item.errored}<br/>
+                                    </template>
+                                    {item.fileSize}
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+    </div>
+</template>

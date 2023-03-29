@@ -1,0 +1,66 @@
+<template>
+    <template if:false={activestate}>
+        <div
+            data-id="unauthenticated"
+            class="unauthenticated slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center"
+        >
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminSyncProvisionsTab}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="slds-illustration slds-illustration_small">
+            <img src={noAccessSVG} class="slds-illustration__svg" />
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium">{label.adminYouNotAreAuthenticated}</h3>
+                <p>{label.adminNotAuthenticatedInstructions}</p>
+            </div>
+        </div>
+    </template>
+    <template if:true={activestate}>
+        <div
+            data-id="authenticated"
+            class="authenticated slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center"
+        >
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminSyncProvisionsTab}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminSyncProvisionsBody}</p>
+            </div>
+        </div>
+        <div class="slds-clearfix">
+            <div class="slds-var-p-vertical_medium slds-grid slds-float_right">
+                <lightning-input
+                    label={label.adminNewProvisionstoActive}
+                    type="toggle"
+                    checked={toggleValue}
+                    onchange={handleToggleChange}
+                >
+                </lightning-input>
+            </div>
+        </div>
+        <div class="slds-card slds-scrollable_y evisort-sync-table">
+            <lightning-datatable
+                data={provisionData}
+                columns={columns}
+                key-field="id"
+                wrap-text-max-lines="10"
+                onsave={handleSave}
+                draft-values={draftValues}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={handleSortData}
+                column-widths-mode="auto"
+                min-column-width="100"
+            >
+            </lightning-datatable>
+            <div class="spinner" if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+            </div>
+        </div>
+    </template>
+</template>

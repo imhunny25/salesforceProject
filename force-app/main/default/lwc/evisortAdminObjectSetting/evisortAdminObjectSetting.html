@@ -1,0 +1,225 @@
+<template>
+    <template if:true={isShowSpinner}>
+        <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+    </template>
+    <div class="slds-border_bottom slds-box slds-m-top_medium" >
+        <div class="slds-grid slds-gutters slds-wrap slds-var-m-bottom_medium slds-var-m-top_small">
+            <div class="slds-form-element slds-col slds-small-size_1-of-1 slds-medium-size_2-of-5 slds-large-size_3-of-12">
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div
+                            class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+                            aria-expanded="true"
+                            aria-haspopup="listbox"
+                            role="combobox"
+                        >
+                            <template if:false={item.existingObject}>
+                                <div
+                                    class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                    role="none"
+                                >
+                                    <lightning-input
+                                        name="search-objects"
+                                        label={label.adminObject}
+                                        type="search"
+                                        data-id={item.id}
+                                        access-key={item.id}
+                                        onchange={searchObjects}
+                                        value={objectLabel}
+                                        oncommit={handleClear}
+                                        placeholder={label.adminObjectSearchPlaceholder}
+                                        disabled={item.existingObject}
+                                        autocomplete="off"
+                                    >
+                                    </lightning-input>
+                                </div>
+                            </template>
+                            <template if:true={item.existingObject}>
+                                <lightning-input
+                                    name="search-objects"
+                                    label={label.adminObject}
+                                    data-id={item.id}
+                                    access-key={item.id}
+                                    value={objectLabel}
+                                    autocomplete="off"
+                                    disabled
+                                ></lightning-input>
+                            </template>
+                            <template if:true={item.showdropdown}>
+                                <div class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                                    <ul
+                                        class="slds-listbox slds-listbox_vertical"
+                                        role="presentation"
+                                    >
+                                        <template for:each={filteredList} for:item="obj">
+                                            <c-picklist-value
+                                                key={obj.value}
+                                                label={obj.label}
+                                                value={obj.value}
+                                                selected={obj.selected}
+                                                data-id={item.id}
+                                                onvalueselect={handleSelect}
+                                            ></c-picklist-value>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <template if:true={item.isLegacy}>
+                <lightning-button
+                    label={label.adminReset}
+                    onclick={resetRow}
+                    access-key={item.id}
+                    disabled={item.resetDisabled}
+                    class="slds-m-top_large slds-m-horizontal_small"
+                ></lightning-button>
+                <lightning-button
+                    label={label.adminAddToExport}
+                    onclick={calculateRow}
+                    access-key={item.id}
+                    disabled={item.calculateDisabled}
+                    class="slds-m-top_large slds-m-horizontal_small"
+                ></lightning-button>
+            </template>
+
+            <template if:false={item.isLegacy}>
+                <lightning-button-icon
+                icon-name="utility:delete"
+                alternative-text={label.adminDelete}
+                class="slds-m-top_large slds-m-left_small slds-m-right_small"
+                title={label.adminDelete}
+                onclick={resetRow}
+                access-key={item.id}
+                id={index}
+            ></lightning-button-icon>
+            </template>
+            <template if:true={item.isEnableObjFileFilterSection}>
+                <div class="slds-col slds-small-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_2-of-12 slds-m-top_small select-min-width">
+                    <lightning-input class="slds-m-top_medium slds-m-bottom_small slds-form-element" 
+                    type="checkbox" 
+                    data-id="checkbox" 
+                    label={label.AdminFilterSelectLibrary}
+                    onchange={handleSelectLibraryOnObject} 
+                    checked={objectLibraryData.isLibraryObjectCheck} 
+                    disabled={item.calculateDisabled}
+                    >
+                    </lightning-input>
+                </div>
+            </template>
+            <template if:true={item.isEnableObjFileFilterSection}>
+                <template if:true={selectLibrary}>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-4 slds-large-size_2-of-12 input-min-width">
+                            <label class="slds-form-element__label slds-no-flex">{label.adminLibrarySectionOnObjectFilter}</label>
+                            <c-evisort-select-library-option 
+                                object-label={objectLibraryData.libraryName}
+                                item-id={item.id}
+                                class="slds-m-top_large slds-m-bottom_small"
+                                is-disable={item.calculateDisabled}
+                                onlibraryvaluechange={handlelibraryChange}>
+                            </c-evisort-select-library-option>
+                    </div>
+            
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-4 slds-large-size_2-of-12 input-min-width">
+                            <div class="slds-form-element__control slds-m-bottom_small">
+                                <div class="slds-combobox_container">
+                                    <div
+                                        class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+                                        aria-expanded="true"
+                                        aria-haspopup="listbox"
+                                        role="combobox">
+                                        <label class="slds-form-element__label slds-no-flex">{label.adminAssociatedSectionOnObjectFilter}</label>
+                                        <select class="slds-select fieldNameComp operatorsPicklistComp" title={label.AdminFilterSelectLibrary} data-id={itemId} data-field 
+                                                onchange={customFiledHandleChange} disabled={item.calculateDisabled}>
+                                                <option value="">{label.AdminFilterSelectField}</option>
+                                                <template for:each={fieldsOption} for:item="option">
+                                                        <template if:true={option.isSelected}>
+                                                            <option key={option.value} value={option.value} selected data-label={option.label} class="operatorClass">
+                                                                {option.label}</option>  
+                                                        </template> 
+                                                        <template if:false={option.isSelected}>
+                                                            <option key={option.value} value={option.value}  data-label={option.label} class="operatorClass">
+                                                                {option.label}</option>  
+                                                        </template>                                                                 
+                                                </template>
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <template if:true={item.isEnableObjFileFilterSection}>
+            <div class="slds-box">
+                <p><b>{label.adminObjectFilter}</b></p>
+                <c-evisort-filter-criteria-section
+                    sobject-name={item.objectLabel}
+                    fields-wrapper={fieldsWrapper}
+                    rows-data={item.objectFilterBody}
+                    data-id={item.id}
+                    onupdaterows={handleObjectUpdatedRow}
+                    rows-disable={item.calculateDisabled} 
+                    >
+                </c-evisort-filter-criteria-section>
+            </div>
+
+            <div class="slds-box slds-m-top_x-small">
+                <h2><b>{label.adminFileFilter}</b></h2>
+                <c-evisort-filter-criteria-section
+                    sobject-name="ContentVersion"
+                    fields-wrapper={fieldsWrapper}
+                    rows-data={item.fileFilterBody}
+                    data-id={item.id}
+                    onupdaterows={handleFileUpdatedRow}
+                    rows-disable={item.calculateDisabled} 
+                    >
+                </c-evisort-filter-criteria-section>
+            </div>
+        </template>
+
+        <template if:true={item.isLegacy}>
+            <template if:true={item.showInfo}>
+                <lightning-layout class="slds-grid slds-wrap">
+                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-p-left_none">
+                        <div
+                            class="object-status-box slds-box slds-p-around_medium  slds-text-align_center"
+                        >
+                            <div class="object-status-box-center slds-align_absolute-center slds-m-bottom_x-large">
+                                <div class="slds-text-heading_medium">
+                                    {label.adminStatus}<br />
+                                    {item.status}
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                        <div
+                            class="object-status-box slds-box slds-p-around_medium slds-text-align_center"
+                        >
+                            <div class="object-status-box-center slds-align_absolute-center">
+                                <div>
+                                    <div class="slds-text-heading_medium">
+                                        <lightning-formatted-number value={item.numberOfDocuments}></lightning-formatted-number> {label.adminDocuments}
+                                    </div>
+                                    {label.adminCompleted}: <lightning-formatted-number value={item.completed}></lightning-formatted-number><br/>
+                                    <template if:true={item.hasErrors}>
+                                        {label.adminErrored}: <a href="#" data-index={index} onclick={onErroredClick}><lightning-formatted-number value={item.errored}></lightning-formatted-number></a><br/>
+                                    </template>
+                                    <template if:false={item.hasErrors}>
+                                        {label.adminErrored}: {item.errored}<br/>
+                                    </template>
+                                    {item.fileSize}
+                                </div>
+                            </div>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+    </div>    
+</template>

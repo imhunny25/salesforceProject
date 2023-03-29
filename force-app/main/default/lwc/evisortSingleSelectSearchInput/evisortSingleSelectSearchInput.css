@@ -1,0 +1,74 @@
+.inputBox{
+    padding: 0; 
+    display: inline;
+    width: auto;
+    border: none;
+    position: relative;
+    margin-left: 0.2rem;
+}
+
+.slds-input {
+    --lwc-heightInput: 1rem;
+    --lwc-fontSizeSmall: 1rem;
+    min-height: calc(var(--lwc-heightInput,1.6rem) + (var(--lwc-borderWidthThin,1px)*1));
+}
+
+.inputBox:focus, .inputBox:active {
+    outline: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.pill {
+    display: inline;
+    margin: top 0.2rem;
+}
+
+.pill-container {
+    padding: 0.2rem;
+    width: 100%;
+    display: inline;
+}
+
+.ulsearch {
+    cursor: pointer;
+    width: 100%; 
+    padding: 0;
+    margin: 0;
+}
+
+.lisearch {
+    cursor: pointer;
+    width: 100%;
+}
+
+.searchitem {
+    overflow: hidden;
+    width: 100%;
+}
+
+.search-bar {
+    border: 1px solid lightgrey;
+    padding: 0.2rem;
+    min-height: 1.1rem;
+}
+
+.ticket-form-element {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.ticket-form-element_field {
+    min-height: 25px;
+}
+
+.ticket-form-element_icon {
+    align-self: flex-end;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-form-element_input-wrapper {
+    display: flex;
+    justify-content: space-between;
+}

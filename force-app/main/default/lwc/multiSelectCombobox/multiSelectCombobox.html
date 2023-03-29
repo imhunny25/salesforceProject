@@ -1,0 +1,60 @@
+<template>
+    <div class="slds-form-element">
+        <label class="slds-form-element__label" for="msc-input">{picklistlabel}</label>
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <div
+                    class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+                    aria-expanded="true"
+                    aria-haspopup="dialog"
+                    role="combobox"
+                    onmouseenter={handleMouseEnter}
+                    onmouseleave={handleMouseLeave}
+                >
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                        <input
+                            type="text"
+                            class="slds-input msc-input slds-combobox__input"
+                            id="msc-input"
+                            autocomplete="off"
+                            role="textbox"
+                            readonly="readonly"
+                            value={selectedmessage}
+                            onclick={handleShowdropdown}
+                            onblur={handleBlur}
+                            disabled={rowDisable}
+                        />
+                        <span
+                            class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right"
+                        >
+                            <lightning-icon
+                                icon-name="utility:down"
+                                size="x-small"
+                                class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small"
+                            ></lightning-icon>
+                        </span>
+                    </div>
+
+                    <!-- Drop down section : Start -->
+                    <template if:true={showDropdown}>
+                        <div id="msc-dropdown" class="slds-dropdown slds-dropdown_fluid" role="listbox">
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                <template for:each={_options} for:item="eachvalue">
+                                    <c-picklist-value
+                                        key={eachvalue.label}
+                                        label={eachvalue.label}
+                                        value={eachvalue.value}
+                                        selected={eachvalue.selected}
+                                        onvalueselect={handleSelect}
+                                    >
+                                    </c-picklist-value>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                    <!-- Drop down section : End -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

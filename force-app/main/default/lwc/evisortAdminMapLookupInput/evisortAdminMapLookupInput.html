@@ -1,0 +1,14 @@
+<template>
+    <lightning-input
+        name="object"
+        title={mappingItem.questionName}
+        variant="label-hidden"
+        value={mappingItem.salesforceField}
+        placeholder={parsePlaceholderLabel}
+        data-mapping
+        data-workflow-field-id={mappingItem.workflowFieldId}
+        data-name={mappingItem.workflowName}
+        onchange={handleMapping}
+        disabled={isInputEnable}
+    ></lightning-input>
+</template>

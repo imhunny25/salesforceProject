@@ -1,0 +1,36 @@
+<!--
+ - Created by rohit on 5/3/22.
+ -->
+
+<!-- Evisort Admin Map Intake Form Settings -->
+<template>
+    <template if:true={showMessage}>
+       <div class="slds-p-bottom_medium">{label.adminChangeDisplaySettings}&nbsp;
+           <a onclick={handleSettingChange}>{label.adminChangeDisplaySettingsLink}</a></div>
+    </template>
+    <template if:false={showMessage}>
+        <div class="slds-grid slds-wrap slds-box">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_8-of-12 slds-p-top_small">
+                {label.adminDisplaySettings}
+            </div>
+            <div class="slds-grid slds-wrap slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-large-size_4-of-12 slds-grid slds-grid_align-end">
+                <div class="slds-col slds-m-top_x-small">
+                    <lightning-combobox options={options}
+                        label=""
+                        class="setting-bar-combo"
+                        variant="label-hidden"
+                        value={visibility}
+                        onchange={handleChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-m-left_small slds-m-top_x-small">
+                    <lightning-button onclick={handleSave} label={label.adminSave} title="Save"></lightning-button>
+                </div>
+                <div class="slds-col slds-m-left_small slds-m-top_x-small">
+                    <lightning-button onclick={handleCancel} label={label.adminCancel} title="Cancel"></lightning-button>
+                </div>
+            </div>
+        </div>
+
+    </template>
+</template>

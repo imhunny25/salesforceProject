@@ -1,0 +1,8 @@
+.input-min-width {
+    min-width: 10rem;
+}
+
+.set-button-width {
+    min-width: auto; 
+    width: auto;
+}

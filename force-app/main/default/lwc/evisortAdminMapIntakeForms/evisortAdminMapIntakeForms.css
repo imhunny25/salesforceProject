@@ -1,0 +1,17 @@
+:host {
+    --lwc-spacingXxSmall: 0.15rem;
+}
+
+.ev-comboToggle {
+    position: absolute;
+    right: 4px;
+    top: 0px;
+}
+
+.ev-spinnerContainer--small {
+    height: 200px;
+}
+
+.ev-spinnerContainer--full {
+    height: 100%;
+}

@@ -1,0 +1,61 @@
+<template>
+    <template if:true={showSpinner}>
+        <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+    </template>
+    <div if:true={error} class="slds-m-bottom_medium slds-notify slds-notify_alert slds-alert_error" role="alert">
+        <h2>{error}</h2>
+    </div>
+    <template if:true={showDocSection}>
+        <div class="slds-text-heading_medium slds-p-bottom_small">{labels.ticketIntakeFormDocumentHeader}</div>
+
+        <div class="slds-m-bottom_large slds-border_bottom">
+            <lightning-radio-group
+                if:true={renderOptions}
+                name="radioGroup"
+                label={labels.ticketDocumentSelectionLabel}
+                options={contractOptions}
+                class="slds-m-bottom_medium"
+                onchange={handleContractValueChange}
+                type="radio"
+            >
+            </lightning-radio-group>
+
+            <div class="slds-m-top_small slds-m-bottom_medium" if:true={showFileUpload}>
+                <c-document-upload
+                    onfileuploaded={handleFileUpload}
+                    onfileremoved={handleFileRemoved}
+                    accepted-file-types={acceptedFileTypes}
+                    accepted-file-format={acceptedFormats}
+                    is-multiple-files={multipleFiles}
+                    record-id={recordId}
+                    object-api-name = {objectApiName}
+                ></c-document-upload>
+            </div>
+        </div>
+    </template>
+
+    <template for:each={retrieveFormSections} for:item="section">
+        <section class="slds-m-bottom_large slds-border_bottom" key={section.position}>
+            <div>
+                <p class="slds-text-heading_medium ">{section.name}</p>
+                <p class="slds-p-bottom_small slds-text-body_small">{section.description}</p>
+            </div>
+            <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_medium">
+                <template for:each={section.questions} for:item="question">
+                    <div key={question.field.id} class="slds-size_1-of-1 slds-col">
+                        <c-intake-form-field-mapping
+                            onintakefieldchange={handleIntakeFieldChange}
+                            onattachmentupload={handleAttachmentUpload}
+                            onattachmentremoved={handleAttachmentRemoved}
+                            workflow-id={retrieveWorkflowId}
+                            question={question}
+                            field-visibility={fieldVisibility}
+                            record-id ={recordId}
+                            object-api-name ={objectApiName}
+                        ></c-intake-form-field-mapping>
+                    </div>
+                </template>
+            </div>
+        </section>
+    </template>
+</template>

@@ -1,0 +1,34 @@
+<template>
+    <div class="slds-grid slds-grid_align-spread slds-timeline__trigger">
+        <div class="slds-grid slds-truncate_container_75 slds-no-space activity-log_detail-group">
+            <lightning-formatted-rich-text disable-linkify value={activityText}></lightning-formatted-rich-text>
+        </div>
+        <div>
+            <p class="slds-timeline__date">
+                <lightning-formatted-date-time
+                    value={activityItem.modifiedDate}
+                    hour="numeric"
+                    minute="numeric"
+                ></lightning-formatted-date-time>
+                <span> | </span>
+                <lightning-formatted-date-time
+                    value={activityItem.modifiedDate}
+                    day="2-digit"
+                    month="2-digit"
+                    year="numeric"
+                ></lightning-formatted-date-time>
+            </p>
+        </div>
+    </div>
+    <template if:true={hasMessage}>
+        <div class="activity-log_message-box">
+            <h4><b>{activityItem.data.subject}</b></h4>
+            <pre><b>{activityItem.data.body}</b></pre>
+        </div>
+    </template>
+    <template if:true={isJudgmentStatusUpdate}>
+        <div class="activity-log_message-box">
+            <p>{activityItem.data.phase.name}</p>
+        </div>
+    </template>
+</template>

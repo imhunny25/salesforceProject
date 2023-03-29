@@ -1,0 +1,197 @@
+<template>
+    <template if:false={activestate}>
+        <div
+            data-id="unauthenticated"
+            class="unauthenticated slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium" style="margin-bottom: 5px;" >{label.adminSyncCriteriaHeader}</h3>
+                </div>
+            </div>
+        </div>
+        <div 
+            class="slds-illustration slds-illustration_small slds-p-right_small minimum-width">
+            <img src={noAccessSVG} class="slds-illustration__svg" />
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium">{label.adminYouNotAreAuthenticated}</h3>
+                <p>{label.adminNotAuthenticatedInstructions}</p>
+            </div>
+        </div>
+    </template>
+    <template if:true={activestate}>
+        <div
+            data-id="authenticated"
+            class="authenticated slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium" style="margin-bottom: 5px;">{label.adminSyncCriteriaHeader}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminSyncCriteriaBody}</p>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_vertical slds-var-m-bottom_medium slds-form-element ">
+            <div class="slds-col slds-form-element__control minimum-width">
+                <lightning-card title={label.adminRootFolder} icon-name="standard:folder">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                    </template>
+                    <div slot="actions">
+                        <lightning-button
+                            label={label.adminSave}
+                            slot="actions"
+                            variant="brand"
+                            icon-name="utility:save"
+                            onclick={saveRootFolder}
+                        >
+                        </lightning-button>
+                    </div>
+                    <div class="slds-col slds-var-m-bottom_medium slds-m-horizontal_small">
+                        <p class="slds-text-body_regular slds-var-p-bottom_small">
+                            {label.adminSyncCriteriaRootFolderVerbiage}&nbsp;
+                            <a
+                                href="https://support.evisort.com/hc/en-us/articles/360060522013-Salesforce-Integration-How-To-Install-the-Evisort-Salesforce-Package-from-the-AppExchange"
+                                title={label.adminAdminGuide}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >{label.adminAdminGuide}</a
+                            >
+                        </p>
+                        <lightning-input type="text" variant="label-hidden" class="root-folder-input" value={rootFolder} onchange={onRootFolderChange}></lightning-input>
+                    </div>
+                </lightning-card>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_vertical slds-var-m-bottom_medium">
+            <div class="slds-col minimum-width">
+                <lightning-card title={label.adminGlobalSettings} icon-name="custom:custom19">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                    </template>
+                    <div slot="actions">
+                        <lightning-input
+                            label=""
+                            type="toggle"
+                            checked={toggleValue}
+                            onchange={handleToggle}
+                        ></lightning-input>
+                    </div>
+                    <div class="slds-col slds-var-m-bottom_medium slds-m-horizontal_small">
+                        <p class="slds-text-body_regular slds-var-p-bottom_small">
+                            {label.adminSyncCriteriaGlobalSettingsVerbiage}
+                        </p>
+                    </div>
+                </lightning-card>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_vertical slds-var-p-bottom_xx-large">
+            <div class="slds-col minimum-width">
+                <lightning-card title={label.adminObjectAndRecordTypeSearchCriteria} icon-name="standard:record">
+                    <div slot="actions">
+                        <lightning-button
+                            label={label.adminAddObject}
+                            slot="actions"
+                            icon-name="utility:add"
+                            onclick={addObjectRow}
+                        ></lightning-button>
+                        <lightning-button
+                            label={label.adminSave}
+                            slot="actions"
+                            variant="brand"
+                            data-input="objectSave"
+                            icon-name="utility:save"
+                            class="slds-var-m-left_small"
+                            onclick={saveObjectSettings}
+                        >
+                        </lightning-button>
+                    </div>
+                    <div
+                        class="slds-grid slds-grid_vertical slds-m-horizontal_small"
+                    >
+                        <template if:true={isLoading}>
+                            <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                        </template>
+                        <template if:true={toggleValue}>
+                            <p class="slds-text-body_regular slds-var-p-horizontal_small">
+                                {label.adminSyncCriteriaGlobalSettingsActive}
+                            </p>
+                        </template>
+                        <template if:false={toggleValue}>
+                            <template if:true={noObjectsMessage}>
+                                <p class="slds-text-body_regular slds-var-p-horizontal_small">
+                                    {label.adminSyncCriteriaObjectSettingsDefault}
+                                </p>
+                            </template>
+
+                            <!-- start object specific settings list-->
+                            <template for:each={objectSettings} for:item="item" for:index="index">
+                                <c-evisort-admin-object-setting 
+                                key={item.id} 
+                                index={index} 
+                                item-from-parent={item} 
+                                onupdateitem={handleUpdateObjectItem}
+                                onremoveobjectitem={removeObjectRow}>
+                                </c-evisort-admin-object-setting>
+                            </template>
+                        </template>
+                    </div>
+                </lightning-card>
+            </div>
+      
+            <div class="slds-col slds-m-top_medium minimum-width">
+                <lightning-card title="Library Specific Settings" icon-name="standard:record">
+                    <div slot="actions">
+                        <lightning-button
+                            label="Add library"
+                            slot="actions"
+                            icon-name="utility:add"
+                            onclick={addLibraryRow}
+                        ></lightning-button>
+                        <lightning-button
+                            label={label.adminSave}
+                            slot="actions"
+                            variant="brand"
+                            data-input="librarySave"
+                            icon-name="utility:save"
+                            class="slds-var-m-left_small"
+                            onclick={saveLibrarySettings}
+                        >
+                        </lightning-button>
+                    </div>
+                    <div
+                        class="slds-grid slds-grid_vertical slds-m-horizontal_small"
+                    >
+                        <template if:true={isLoading}>
+                            <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                        </template>
+                        <template if:true={toggleValue}>
+                            <p class="slds-text-body_regular slds-var-p-horizontal_small">
+                                {label.adminSyncCriteriaGlobalSettingsActive}
+                            </p>
+                        </template>
+                        <template if:false={toggleValue}>
+                            <template if:true={nolibraryObjectMessage}>
+                                <p class="slds-text-body_regular slds-var-p-horizontal_small">
+                                    {label.AdminSyncCriteriaLibrarySettingsDefault}
+                                </p>
+                            </template>
+
+                            <!-- Start library specific settings list-->
+                            <template for:each={librarySettings} for:item="item" for:index="index">
+                                <c-evisort-admin-library-setting
+                                    key={item.id}
+                                    index={index}
+                                    item-from-parent={item}
+                                    onupdateitem={handleUpdateLibraryItem}
+                                    onremovelibraryitem ={resetLibraryRow}
+                                    >
+                                </c-evisort-admin-library-setting> 
+                            </template>
+                        </template>
+                    </div>
+                </lightning-card>
+            </div>
+        </div>
+    </template>
+</template>

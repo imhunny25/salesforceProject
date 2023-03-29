@@ -1,0 +1,20 @@
+.index-spacing {
+    max-width: 0px; 
+    min-width: 0px;
+}
+
+.fix-index {
+    margin-left: -12px;
+}
+
+.label-min-width {
+    min-width: 8rem;
+}
+
+.delete-min-width {
+    min-width: 32px;
+}
+
+.combobox-spacing {
+    margin-top: -14px;
+}

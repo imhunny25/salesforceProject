@@ -1,0 +1,24 @@
+.scrollable {
+    min-height: 500px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
+.set-width {
+    width:80%;
+}
+
+.toggle, .toggle::after, .toggle::before, .toggle:focus {
+    --sds-c-checkbox-toggle-color-background-checked: rgb(0, 169, 86);
+    --sds-c-checkbox-toggle-color-background-checked-focus: rgb(0, 169, 86);
+    --sds-c-checkbox-toggle-color-background-checked-hover: rgb(1, 130, 70);
+    --sds-c-checkbox-toggle-color-border-checked: rgb(0, 169, 86);
+    --sds-c-checkbox-toggle-color-border-hover: rgb(1, 130, 70);
+}
+
+.slds-backdrop {
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    background-color: #66677766;
+    }

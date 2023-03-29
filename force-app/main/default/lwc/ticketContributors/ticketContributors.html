@@ -1,0 +1,33 @@
+<template>
+    <p if:false={hasDataToRender} class="slds-text-align_center slds-m-top--xx-large">
+        <strong>{labels.ticketNoContributorData}</strong>
+    </p>
+    <div class="slds-p-around_medium">
+        <ul if:true={hasAssignees} class="participants">
+            <h2>{labels.ticketAssigneesHeader}</h2>
+            <template for:each={_assignees} for:item="assignee">
+                <li key={assignee.id} class="slds-p-bottom_medium">
+                    <span class="slds-avatar">
+                        <abbr class="slds-avatar__initials slds-icon-standard-account" title={assignee.name}
+                            >{assignee.initials}</abbr
+                        >
+                    </span>
+                    <span class="name">{assignee.name}</span>
+                </li>
+            </template>
+        </ul>
+        <ul if:true={hasParticipants} class="participants">
+            <h2>{labels.ticketParticipantsHeader}</h2>
+            <template for:each={_participants} for:item="participant">
+                <li key={participant.id} class="slds-p-bottom_medium">
+                    <span class="slds-avatar">
+                        <abbr class="slds-avatar__initials slds-icon-standard-account" title={participant.name}
+                            >{participant.initials}</abbr
+                        >
+                    </span>
+                    <span class="name">{participant.name}</span>
+                </li>
+            </template>
+        </ul>
+    </div>
+</template>

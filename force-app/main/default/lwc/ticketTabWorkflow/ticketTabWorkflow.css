@@ -1,0 +1,35 @@
+.mock-slds-file__crop {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    padding-top: 56.25%;
+}
+
+.file-wrapper {
+    width: 20rem;
+}
+
+.reviewer {
+    padding: 0;
+    margin: 0;
+}
+
+.reviewer li {
+    padding-bottom: 1rem;
+}
+
+.reviewer li .name {
+    margin-left: 1rem;
+    font-size: 0.825rem;
+    color: #706e6b;
+    padding-top: 0.25rem;
+}
+
+.reviewer .item {
+    padding: 0.5rem;
+    background: rgb(243, 242, 242);
+}
+
+.reviewer .item {
+    border-radius: 0.25rem;
+}

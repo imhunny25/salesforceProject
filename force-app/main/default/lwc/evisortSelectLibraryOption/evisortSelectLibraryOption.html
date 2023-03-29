@@ -1,0 +1,28 @@
+<template>
+    <div class="slds-form-element">
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <div
+                    class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open"
+                    aria-expanded="true"
+                    aria-haspopup="listbox"
+                    role="combobox">
+                    <select class="slds-select fieldNameComp operatorsPicklistComp" title={label.AdminFilterSelectLibrary} data-id={itemId}
+                            onchange={libraryHandleChange} disabled={isDisable}>
+                            <option value="">{label.AdminFilterSelectLibrary}</option>
+                            <template for:each={libraryOptions} for:item="option">
+                                    <template if:true={option.isSelected}>
+                                        <option key={option.value} value={option.value} selected data-label={option.label} class="operatorClass">
+                                            {option.label}</option>  
+                                    </template> 
+                                    <template if:false={option.isSelected}>
+                                        <option key={option.value} value={option.value}  data-label={option.label} class="operatorClass">
+                                            {option.label}</option>  
+                                    </template>                                                                 
+                            </template>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

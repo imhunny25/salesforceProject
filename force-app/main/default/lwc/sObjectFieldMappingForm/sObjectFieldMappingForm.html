@@ -1,0 +1,73 @@
+<template>
+    <div if:true={showMappings} onclick={handleListViewHide}>
+        <template if:true={objectLoaded}>
+                <div class="slds-is-relative ev-spinnerContainer--full slds-m-top_x-large">
+                        <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand slds-m-top_x-large">
+                                <span class="slds-assistive-text">{label.adminLoading}</span>
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                        </div>
+                </div>
+        </template>
+        <template if:false={objectLoaded}> 
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 set-min-width">
+                    <lightning-combobox
+                        class="slds-m-bottom_small"
+                        name="object"
+                        label={label.adminMapIntakeFormsSalesforceObject}
+                        value={objectname}
+                        placeholder={label.adminMapIntakeFormsSalesforceObject}
+                        options={sObjects}
+                        data-field
+                        required
+                        disabled={objectSelected}
+                        onchange={handleObjectChange}
+                    >
+                    </lightning-combobox>
+                    </div>
+                        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-p-top_large">
+                            <lightning-button
+                                label={label.adminMapIntakeFormsClear}
+                                onclick={reset}
+                            ></lightning-button>
+                        </div>
+                    </div>
+                    <template if:true={evisortFields.data}>
+                        <div class="slds-grid slds-m-vertical_medium">
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_2-of-7">
+                                <label>{label.adminEvisortFields}</label>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-3 slds-large-size_5-of-7 slds-m-left_medium">
+                                <label class="slds-m-left_none">{label.adminMapIntakeFormsMappedObjectFields}</label>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <template for:each={evisortFields.data} for:item="evisortField">
+                        <div class="slds-grid" key={evisortField.id} >
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_2-of-7" >
+                                <label>{evisortField.label}</label>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-3 slds-large-size_5-of-7 slds-m-left_medium slds-m-right_large">
+                                <template if:true={isLoadedSobject}>
+                                    <c-s-object-fields
+                                        objectname={objectname}
+                                        evisort-mapped-fields={evisortField}
+                                        field-data-type-miss-match={fieldDataTypeMissMatch}
+                                        onupdatefieldrow={handleUpdateFieldRow}
+                                        class="slds-scrollable"
+                                        >
+                                    </c-s-object-fields>
+                                </template>
+                            </div>
+                        </div>
+                </template>
+        </template>
+    </div>
+    <div if:false={showMappings}>
+        <div class="slds-col slds-size_4-of-12">
+            <label>{label.AdminNoEvisortFields}</label>
+        </div>
+    </div>
+</template>

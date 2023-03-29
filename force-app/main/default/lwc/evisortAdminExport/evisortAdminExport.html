@@ -1,0 +1,189 @@
+<template>
+    <template if:false={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminLegacyFilesExportTab}</h3>
+                </div>
+            </div>
+        </div>
+        <div 
+            class="slds-illustration slds-illustration_small slds-p-right_small minimum-width">
+            <img src={noAccessSVG} class="slds-illustration__svg" />
+
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium">{label.adminYouNotAreAuthenticated}</h3>
+                <p>{label.adminNotAuthenticatedInstructions}</p>
+            </div>
+        </div>
+    </template>
+    <template if:true={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center slds-p-right_small minimum-width">
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminLegacyFilesExportTab}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminLegacyFilesExportBody}</p>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_vertical slds-var-m-bottom_medium">
+            <div class="slds-col minimum-width">
+                <lightning-card title="Overall Status">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                    </template>
+                    <div slot="actions">
+                        <lightning-button
+                            label={label.adminRefresh}
+                            slot="actions"
+                            onclick={refreshPage}
+                        ></lightning-button>
+                        <lightning-button
+                            label={label.adminCancel}
+                            slot="actions"
+                            class="slds-var-m-left_small"
+                            disabled={jobStatus.cancelDisabled}
+                            onclick={cancelJob}
+                        ></lightning-button>
+                        <lightning-button
+                            label={label.adminStartMassExport}
+                            slot="actions"
+                            variant="brand"
+                            icon-name="utility:text_template"
+                            class="slds-var-m-left_small"
+                            disabled={jobStatus.readyDisabled}
+                            onclick={onStartJobClick}
+                        >
+                        </lightning-button>
+                    </div>
+                    <div class="slds-col slds-var-m-bottom_medium slds-m-horizontal_small">
+                        <p class="slds-text-body_regular slds-var-p-bottom_small">
+                            {label.adminClickRefresh}<br />
+                            <template if:true={showStatus}>
+                                <lightning-layout class="slds-grid slds-wrap">
+                                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                                        <div
+                                            class="status-box slds-box slds-p-around_medium slds-text-align_center slds-align_absolute-center"
+                                        >
+                                            <div class="slds-text-heading_large">
+                                                {label.adminOverallStatus}<br/>
+                                                <lightning-formatted-number value={jobStatus.status}></lightning-formatted-number>
+                                            </div>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                                        <div class="status-box slds-box slds-p-around_medium slds-text-align_center">
+                                            <div class="status-box-center slds-align_absolute-center">
+                                                <div>
+                                                    <div class="slds-text-heading_large">
+                                                        <lightning-formatted-number value={jobStatus.numberOfDocuments}></lightning-formatted-number> {label.adminDocuments}
+                                                    </div>
+                                                    {label.adminCompleted}: <lightning-formatted-number value={jobStatus.completed}></lightning-formatted-number><br/>
+                                                    {label.adminErrored}: <lightning-formatted-number value={jobStatus.errored}></lightning-formatted-number><br/>
+                                                    {totalFileSize}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" class="slds-col slds-size_1-of-1 slds-large-size_1-of-3">
+                                        <div class="status-box slds-box slds-p-around_medium slds-text-align_center">
+                                            <div class="status-box-center slds-align_absolute-center">
+                                                <div>
+                                                    <div class="slds-text-heading_large">
+                                                        <lightning-formatted-number value={jobStatus.remaining}></lightning-formatted-number> {label.adminRemaining}
+                                                    </div>
+                                                    {estimatedTime}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </template>
+                        </p>
+                    </div>
+                </lightning-card>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_vertical slds-var-p-bottom_xx-large">
+            <div class="slds-col minimum-width">
+                <lightning-card title="Object Settings">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                    </template>
+                    <div slot="actions">
+                        <lightning-button
+                            label={label.adminAddObject}
+                            slot="actions"
+                            icon-name="utility:add"
+                            onclick={addRow}
+                        >
+                        </lightning-button>
+                        <lightning-button
+                            label={label.adminResetAll}
+                            slot="actions"
+                            class="slds-var-m-left_small"
+                            disabled={resetAllRowsDisabled}
+                            onclick={resetAllRows}
+                        >
+                        </lightning-button>
+                    </div>
+                    <div class="slds-grid slds-grid_vertical slds-m-horizontal_small">
+                        <template for:each={objects} for:item="item" for:index="index">
+                            <c-evisort-admin-object-setting 
+                            key={item.id} 
+                            index={index} 
+                            item-from-parent={item} 
+                            onupdateitem={handleUpdateObjectItem}
+                            onaddobjectitem={calculateObjectRow} 
+                            onremoveobjectitem={resetObjectRow} 
+                            >
+                            </c-evisort-admin-object-setting>
+                        </template>
+                    </div>
+                </lightning-card>
+            </div>
+            
+            <div class="slds-col slds-m-top_medium minimum-width">
+                <lightning-card title="Library Settings">
+                    <template if:true={isLoading}>
+                        <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                    </template>
+                    <div slot="actions">
+                        <lightning-button
+                            label="Add library"
+                            slot="actions"
+                            icon-name="utility:add"
+                            onclick={addRowforLibrary}
+                        >
+                        </lightning-button>
+                        <lightning-button
+                            label={label.adminResetAll}
+                            slot="actions"
+                            class="slds-var-m-left_small"
+                            disabled={resetAllLibraryRowsDisabled}
+                            onclick={resetAllLibraryRows}
+                        >
+                        </lightning-button>
+                </div>
+                    <div class="slds-grid slds-grid_vertical slds-m-horizontal_small">
+                        <template for:each={librarys} for:item="item" for:index="index">
+                            <c-evisort-admin-library-setting
+                                key={item.id}
+                                index={index}
+                                item-from-parent={item}
+                                oncalculatelibraryrow={calculateLibraryRow}
+                                onupdateitem={handleUpdateLibraryItem}
+                                onremovelibraryitem ={resetLibraryRow}
+                                >
+                            </c-evisort-admin-library-setting>
+                        </template>
+                    </div>
+                </lightning-card>
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,131 @@
+<template>
+    <div class="slds-form-element">
+        <span title="required" class="slds-required">*</span>
+        <label class={labelClass} for="csskills-matrix-lookup-search">
+            {label}
+            <lightning-helptext
+                if:true={hasTooltip}
+                class="slds-p-left_xx-small"
+                content={tooltip}
+            ></lightning-helptext>
+        </label>
+
+        <div class="slds-form-element__control">
+            <!-- slds-has-selection -->
+            <div class="slds-combobox_container slds-has-selection">
+                <div
+                    class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click csskills-matrix-lookup-container"
+                    aria-expanded="true"
+                    aria-haspopup="listbox"
+                    role="combobox"
+                >
+                    <!-- record selected -->
+                    <template if:true={_selectedRecord}>
+                        <div
+                            class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right"
+                            role="none"
+                        >
+                            <lightning-icon
+                                class="slds-icon_container slds-icon-standard-account slds-combobox__input-entity-icon lookup-item_icon"
+                                icon-name={icon}
+                                size="small"
+                                alternative-text=""
+                            >
+                            </lightning-icon>
+                            <input
+                                type="text"
+                                class="slds-input slds-combobox__input slds-combobox__input-value"
+                                autocomplete="off"
+                                role="textbox"
+                                readonly
+                                value={_selectedRecord.name}
+                            />
+                            <!-- close -->
+                            <!-- lightning-button-icon was disabling the button -->
+                            <button
+                                data-btn-remove-selection
+                                class="slds-button slds-button_icon slds-input__icon slds-input__icon_right btn-remove-selection"
+                                title="Remove selected option"
+                                onclick={removeSelectedRecord}
+                            >
+                                <lightning-icon
+                                    class="slds-button__icon"
+                                    icon-name="utility:close"
+                                    size="xx-small"
+                                    alternative-text="Remove selected option"
+                                >
+                                </lightning-icon>
+                            </button>
+                        </div>
+                    </template>
+                    <!-- no record selected -->
+                    <template if:false={_selectedRecord}>
+                        <!-- search controls -->
+                        <div
+                            class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            role="none"
+                        >
+                            <input
+                                type="text"
+                                class="slds-input slds-combobox__input lookup-input"
+                                autocomplete="off"
+                                role="textbox"
+                                onkeyup={handleInputKeyup}
+                                onfocus={handleFocus}
+                                onblur={handleBlur}
+                            />
+                            <span
+                                class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right"
+                            >
+                                <lightning-icon icon-name="utility:search" size="x-small" alternative-text="">
+                                </lightning-icon>
+                            </span>
+                        </div>
+                    </template>
+                    <div if:false={hideErrorMsg} class="slds-form-element__help slds-required">
+                        {labels.ticketChildSelectionError}
+                    </div>
+                    <!-- search results -->
+                    <div
+                        id="csskills-matrix-lookup-listbox"
+                        class={computedListClasses}
+                        role="listbox"
+                        tabindex="0"
+                        onkeyup={handleScrollList}
+                    >
+                        <ul class="slds-listbox slds-listbox_vertical lookup-list" role="presentation">
+                            <template for:each={recordsList} for:item="record">
+                                <li
+                                    key={record.id}
+                                    role="presentation"
+                                    class="slds-listbox__item"
+                                    tabindex="0"
+                                    data-id={record.id}
+                                    data-name={record.name}
+                                    data-field-value={record.fieldValue}
+                                    onclick={selectRecord}
+                                    onmousedown={preventBlur}
+                                >
+                                    <div
+                                        class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta lookup-item_wrapper"
+                                        role="option"
+                                    >
+                                        <span class="slds-media__figure slds-listbox__option-icon">
+                                            <lightning-icon icon-name={icon} size="small" alternative-text="">
+                                            </lightning-icon>
+                                        </span>
+                                        <span class="slds-media__body">
+                                            <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                                {record.name}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

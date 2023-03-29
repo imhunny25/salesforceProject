@@ -1,0 +1,23 @@
+.evisort-list {
+    padding-bottom: 300px;
+}
+
+.status-box {
+    min-height: 150px;
+}
+
+.status-box-center {
+    height: 110px;
+}
+
+.object-status-box {
+    min-height: 120px;
+}
+
+.object-status-box-center {
+    height: 90px;
+}
+
+.minimum-width{
+    min-width: 22rem;
+}

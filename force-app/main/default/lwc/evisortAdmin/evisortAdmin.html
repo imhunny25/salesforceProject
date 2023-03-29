@@ -1,0 +1,174 @@
+<template>
+    <div class="slds-box slds-theme_default slds-var-m-bottom_medium">
+        <div class="slds-grid slds-wrap">
+            <div class="header-info slds-col slds-size_1-of-1 slds-medium-size_9-of-12 slds-large-size_8-of-12 slds-x-large-size_9-of-12 slds-grid slds-wrap">
+                <span class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_5-of-12 slds-large-size_4-of-12 slds-x-large-size_3-of-12">
+                    <svg
+                        class="evisort-svg slds-p-right_medium slds-border_right"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <use xlink:href={logoSvgUrl}></use>
+                    </svg>
+                </span>
+                <span class="slds-col slds-size_1-of-1 slds-small-size_1-of-2 slds-medium-size_7-of-12 slds-large-size_8-of-12 slds-x-large-size_9-of-12">
+                    <span class="slds-m-right_medium"
+                        ><span title={label.adminEvisortApiVersionHelptext}>{label.adminApiVersion}</span
+                        >&nbsp;&mdash;&nbsp;
+                        <lightning-formatted-number
+                            value={evisortAPIVersion}
+                            minimum-fraction-digits="1"
+                        ></lightning-formatted-number>
+                    </span>
+                    <span class="slds-m-right_medium"
+                        ><span title={label.adminEvisortLastPullDateHelptext}>{label.adminLastFieldPulled}</span
+                        >&nbsp;&mdash;&nbsp;
+                        <lightning-formatted-date-time
+                            value={evisortLastPullDate}
+                            year="numeric"
+                            month="numeric"
+                            day="numeric"
+                            hour="2-digit"
+                            minute="2-digit"
+                            time-zone-name="short"
+                            hour12="true"
+                        ></lightning-formatted-date-time>
+                    </span>
+                    <span class="slds-m-right_medium"
+                        ><span title={label.adminEvisortLastDocSyncHelptext}>{label.adminLastDocSync}</span
+                        >&nbsp;&mdash;&nbsp;
+                        <lightning-formatted-date-time
+                            value={evisortLastDocSync}
+                            year="numeric"
+                            month="numeric"
+                            day="numeric"
+                            hour="2-digit"
+                            minute="2-digit"
+                            time-zone-name="short"
+                            hour12="true"
+                        ></lightning-formatted-date-time>
+                    </span>
+                </span>
+            </div>
+            <div class='slds-col slds-size_1-of-1 slds-medium-size_3-of-12 slds-large-size_4-of-12 slds-x-large-size_3-of-12 slds-m-bottom_x-small slds-clearfix'>
+                <div class="slds-float_right">
+                    <button
+                        onclick={handlePullFromEvisort}
+                        disabled={pullButtonDisabled}
+                        class="slds-button slds-button_neutral slds-m-bottom_x-small slds-m-around_xx-small"
+                    >
+                        <lightning-icon
+                            icon-name="utility:download"
+                            alternative-text="Connected"
+                            size="x-small"
+                            title="x-small size"
+                            class="slds-button__icon_left slds-current-color"
+                        ></lightning-icon>
+                        {label.adminPullFromEvisort}
+                        <div class="spinner" if:true={isPulling}>
+                            <lightning-spinner
+                                alternative-text={label.adminPullFromEvisort}
+                                size="small"
+                            ></lightning-spinner>
+                        </div>
+                    </button>
+
+                    <lightning-button
+                        label={label.adminOtherOptionsAdminSetupGuideAction}
+                        icon-name="utility:new_window"
+                        onclick={launchEvisortDocumentation}
+                        class="slds-m-around_xx-small"
+                    ></lightning-button>
+                </div>
+            </div>
+        </div>
+        <lightning-tabset variant="vertical" class="evisort">
+            <lightning-tab
+                onclick={handleClick}
+                label={label.adminAuthenticationTab}
+                value="authentication"
+                icon-name="utility:identity"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-auth
+                    onstatechange={handleStateChange}
+                    iconsvgurl={iconSvgUrl}
+                    apisetupgifurl={apiSetupGifUrl}
+                    namedcredentialgifurl={namedCredentialGifUrl}
+                    activestate={activeState}
+                >
+                </c-evisort-admin-auth>
+            </lightning-tab>
+
+            <lightning-tab
+                label={label.adminSyncCriteriaTab}
+                icon-name="utility:filter_criteria_rule"
+                value="criteria"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-sync-criteria iconsvgurl={iconSvgUrl} activestate={activeState}>
+                </c-evisort-admin-sync-criteria>
+            </lightning-tab>
+
+            <lightning-tab
+                label={label.adminSyncFieldsTab}
+                icon-name="utility:replace"
+                value="fields"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-sync-fields iconsvgurl={iconSvgUrl} activestate={activeState}>
+                </c-evisort-admin-sync-fields>
+            </lightning-tab>
+            <lightning-tab
+                label={label.adminSyncProvisionsTab}
+                icon-name="utility:retweet"
+                value="provisions"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-sync-provisions iconsvgurl={iconSvgUrl} activestate={activeState}>
+                </c-evisort-admin-sync-provisions>
+            </lightning-tab>
+            <lightning-tab
+                label={label.adminLegacyFilesExportTab}
+                icon-name="utility:text_template"
+                value="export"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-export iconsvgurl={iconSvgUrl} activestate={activeState}> </c-evisort-admin-export>
+            </lightning-tab>
+            <lightning-tab
+                label={label.adminMapIntakeFormsTab}
+                icon-name="utility:location"
+                value="map"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-map-intake-forms iconsvgurl={iconSvgUrl} activestate={activeState}></c-evisort-admin-map-intake-forms>
+            </lightning-tab>
+            <lightning-tab
+                label={label.adminOtherOptionsTab}
+                icon-name="utility:settings"
+                value="other"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+                <c-evisort-admin-other-options iconsvgurl={iconSvgUrl} activestate={activeState}>
+                </c-evisort-admin-other-options>
+            </lightning-tab>
+
+            <lightning-tab
+                label="Post-Install Script"
+                icon-name="utility:sort"
+                value="script"
+                onactive={handleActive}
+                class="slds-scrollable"
+            >
+            <c-evisort-post-install onstatechange={handleStateChange} ></c-evisort-post-install>
+            </lightning-tab>
+        </lightning-tabset>
+    </div>
+</template>

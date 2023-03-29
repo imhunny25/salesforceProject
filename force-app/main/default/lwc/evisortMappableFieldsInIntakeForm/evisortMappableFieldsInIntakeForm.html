@@ -1,0 +1,34 @@
+<template>
+    <lightning-combobox
+    if:false={mapping.isInputEnable}
+        name="object"
+        title={mapping.questionName}
+        variant="label-hidden"
+        options={fields}
+        value={mapping.salesforceField}
+        data-mapping
+        data-workflow-field-id={mapping.workflowFieldId}
+        data-name={mapping.workflowName}
+        onchange={handleUpdateMapping}
+    >
+    </lightning-combobox>
+    <div if:true={mapping.isInputEnable} class="slds-is-relative">
+        <div>
+            <c-evisort-admin-map-lookup-input
+                data-workflow-field-id={mapping.workflowFieldId}
+                onupdatemapping={handleUpdateMapping}
+                mapping-item={mapping}
+            ></c-evisort-admin-map-lookup-input>
+        </div>
+        <button
+            class="slds-button slds-button_icon slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default ev-comboToggle slds-is-relative"
+        >
+            <lightning-icon
+                size="x-small"
+                icon-name="utility:clear"
+                data-workflow-field-id={mapping.workflowFieldId}
+                onclick={handleToggleMappingType}
+            ></lightning-icon>
+        </button>
+    </div>
+</template>

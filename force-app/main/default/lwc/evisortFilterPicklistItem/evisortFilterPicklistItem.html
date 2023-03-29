@@ -1,0 +1,56 @@
+<template>
+
+    <template if:false={isshowonlymenus}>
+        <template if:false={isshowcheckbox}>
+            <li role="presentation" key={item.key} class={itemClass} id="ms-list-item" data-id={item.key} data-name={item.value} onclick={onItemSelected}>
+                <div id="listbox-option-unique-id-01"  class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small slds-media_center" role="option">
+                    <span class="slds-media__figure">
+                        <lightning-icon icon-name="utility:check" size="x-small" alternative-text="Selected" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small"></lightning-icon>
+                    </span>
+    
+                    <span class="slds-media__body">
+                        <span class="slds-truncate" title={item.label}>{item.label}</span>
+                    </span> 
+                </div>
+            </li>
+        </template>
+
+   
+        <template if:true={isshowcheckbox}>
+            <li role="presentation" key={item.key} class={itemClass} id="ms-list-item02" data-id={item.key} data-name={item.value} onclick={onItemSelected}>
+                <div id="listbox-option-unique-id-02"  class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small slds-media_center" role="option">
+                    <span class="slds-media__figure">
+                        <lightning-input type="checkbox" label="" data-id={item.key} onchange={onItemSelected} data-name={item.value} checked={item.selected}>
+                        </lightning-input>
+                    </span>
+    
+                    <span class="slds-media__body">
+                        <span class="slds-truncate" title={item.label}>{item.label}</span>
+                    </span>
+                </div>
+            </li>
+        </template>
+    </template>
+    
+
+    <template if:true={isshowonlymenus}>
+    
+        <li role="presentation" key={item.key} class={itemClass} id="ms-list-item3" data-id={item.key} data-name={item.value} onclick={onItemSelected}>
+            <div id="listbox-option-unique-id-03"  class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small slds-media_center" role="option">
+                <span class="slds-media__figure">
+                    <template if:true={item.selected}>
+                        <lightning-icon icon-name="utility:check" size="x-small" alternative-text="Selected" class="slds-icon slds-icon--selected slds-icon--x-small slds-icon-text-default slds-m-right--x-small"></lightning-icon>
+                    </template>
+                    <template if:false={item.selected}>
+                        <div style="margin-left: 23px;"></div>
+                    </template>
+                    
+                </span>
+
+                <span class="slds-media__body">
+                    <span class="slds-truncate" title={item.label}>{item.label}</span>
+                </span>
+            </div>
+        </li>
+    </template>
+</template>

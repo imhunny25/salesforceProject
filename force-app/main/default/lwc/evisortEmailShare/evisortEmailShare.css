@@ -1,0 +1,27 @@
+.form {
+    background: white;
+}
+
+.popover {
+    left: -145px;
+    bottom: 52px;
+}
+
+.slds-pill__remove {
+    display: none !important;
+}
+
+.set-width {
+    width: 80%;
+}
+
+.strong-text {
+    font-weight: bold;
+}
+
+.slds-backdrop {
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    background-color: #66677766;
+    }

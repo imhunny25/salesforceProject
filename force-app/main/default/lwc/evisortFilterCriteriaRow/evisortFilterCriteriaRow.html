@@ -1,0 +1,140 @@
+<template >
+    <div class="slds-form-element__control key={fieldName}">
+        <div class="slds-form-element__row slds-grid slds-gutters slds-wrap">       
+            <div class="slds-m-top_medium index-spacing">
+                <template if:true={showLabel}>
+                    <div>&nbsp;</div>
+                </template>
+                <p class="fix-index">{indexToShow}</p>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-5 slds-large-size_1-of-5 slds-m-top_small label-min-width">
+                <template if:true={showLabel}>
+                    {label.AdminFilterFields}
+                </template>
+                <select class="slds-select fieldNameComp" title="Select Fields" name={index}
+                    onchange={handleFilterFieldsChange}  disabled={rowDisable}>
+                    <option value="">{label.AdminFilterSelectField}</option>
+                    <template for:each={filterFieldsToDisplay} for:item="field">
+                        <option key={field.value} value={field.value} class="selectField"> {field.label}</option>
+                    </template>
+                </select>
+            </div>
+
+            <template if:true={isShowFields}>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-5 slds-large-size_1-of-5 slds-m-top_small label-min-width">
+                    <template if:true={showLabel}>
+                        <div> {label.AdminFilterOperator}</div>
+                    </template>
+                    <select class="slds-select operatorsPicklistComp" title="Select operator"
+                        name={index} onchange={handleOperatorChange} disabled={isoperatorDisabled}>
+                        <option value="">{label.AdminFilterSelectOption}</option>
+                        <template for:each={operatorsToShow} for:item="operator">
+                            <option key={operator.value} value={operator.value} class="operatorClass">
+                                {operator.label}
+                            </option>
+                        </template>
+                    </select>
+                </div>
+
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-5 slds-large-size_1-of-5 slds-m-top_small label-min-width">
+                    <template if:true={showLabel}>
+                        {label.AdminFilterFieldType}
+                    </template>
+                    <lightning-input class="slds-p-around_none" variant="label-hidden" name={index} disabled
+                        value={row.fieldTypeLabel}>
+                    </lightning-input>
+                </div>
+            
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-5 slds-large-size_1-of-5 slds-m-top_small label-min-width">
+                    <template if:true={showLabel}>
+                        <div>{label.AdminFilterValue}</div>
+                    </template>
+                    <template if:true={showTextBox}>
+                        <lightning-input class="ValueCmp slds-p-around_none" type="text" name={index} value={text}
+                            variant="label-hidden" onchange={handleStringChange} placeholder={showValuePlaceHolder}
+                            autocomplete="off" disabled={isoperatorDisabled}></lightning-input>
+                    </template>
+                    <template if:true={showDate}>
+                        <lightning-input class="ValueCmp slds-p-around_none" type="Date" variant="label-hidden"
+                            placeholder={label.AdminFilterEnterDate} name={index} value={text} onchange={handleStringChange}
+                            autocomplete="off" disabled={isoperatorDisabled}>
+                        </lightning-input>
+                    </template>
+
+                    <template if:true={showDateTime}>
+                        <lightning-input class="ValueCmp slds-p-around_none" type="DateTime" variant="label-hidden"
+                            name={index} value={text} onchange={handleStringChange} autocomplete="off"
+                            disabled={isoperatorDisabled}>
+                        </lightning-input>
+                    </template>
+
+                    <template if:true={showMultiPicklist}>
+                        <div class="combobox-spacing">
+                            <template if:true={multiselectEnable}>
+                                <c-multi-select-combobox
+                                    picklistlabel= ''
+                                    options={picklistOption}
+                                    values={recordTypes}
+                                    placeholder={label.adminAllRecordTypes}
+                                    onmultiselectchange={handleOnItemSelected}
+                                    row-disable ={rowDisable}
+                                ></c-multi-select-combobox> 
+                            </template>
+                        </div>    
+                    </template>
+                
+                    <template if:true={showCheckbox}>
+                        <lightning-combobox class="ValueCmp" name={index} variant="label-hidden"
+                            placeholder={label.AdminFilterEnterSelectvalue} options={booleanOptionsToShow} onchange={handleStringChange}
+                            value={text} disabled={rowDisable}>
+                        </lightning-combobox>
+                    </template>
+
+                    <template if:true={showPicklist}>
+                        <select class="slds-select picklistValueField ValueCmp" title="Select value" name={index}
+                            onchange={handlePicklistValueChange} 
+                            disabled={isoperatorDisabled}>
+                            <option value="">{label.AdminFilterSelectOption}</option>
+                            <template for:each={picklistOptions} for:item="field">
+                                <option key={field.value} value={field.value} class="picklistOptionClass"> {field.label}</option>
+                            </template>
+                        </select>
+                    </template>
+
+                    <template if:true={showNumber}>
+                        <lightning-input class="ValueCmp slds-p-around_none" type="number" variant="label-hidden" label="Value"  step="0.01"
+                            placeholder={label.AdminFilterEnterNumber} name={index} value={text} disabled={isoperatorDisabled}
+                            onchange={handleStringChange} autocomplete="off">
+                        </lightning-input>
+                    </template>
+
+                    <template if:true={showFormula}>
+                        <lightning-input class="ValueCmp slds-p-around_none" type="text" variant="label-hidden" label="Value"
+                            placeholder={label.AdminFilterEnterSometext} name={index} value={text} autocomplete="off"
+                            onchange={handleStringChange} disabled={isoperatorDisabled}>
+                        </lightning-input>
+                    </template>
+
+                    <template if:true={showReference}>
+                        <lightning-input class="ValueCmp slds-p-around_none" type="text" label="Value" variant="label-hidden"
+                            placeholder={label.AdminFilterEnterSometext} name={index} value={text} autocomplete="off"
+                            onchange={handleStringChange} disabled={isoperatorDisabled}>
+                        </lightning-input>
+                    </template>
+
+                </div>
+            </template>
+                
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5 slds-large-size_1-of-5">
+                <template if:true={showLabel}>
+                    <div>&nbsp;</div>
+                </template>
+                <div class="slds-m-top_small delete-min-width">
+                    <lightning-button-icon icon-name="utility:delete" size="medium"
+                        alternative-text="Delete" variant="label-hidden" onclick={handleDeleteRow} disabled={rowDisable}>
+                    </lightning-button-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,68 @@
+<template>
+    <lightning-spinner if:true={isLoading} variant="brand" size="medium"></lightning-spinner>
+    <div if:true={isEditMode} class={computeEditWrapperClasses}>
+        <template if:true={isRequired}>
+            <abbr class="slds-required slds-form-element__label" title="required">*</abbr>
+        </template>
+        <div class="slds-truncate"><b>{fieldLabel}</b></div>
+        <p class="slds-text-body_small">{filteredFieldDescription}</p>
+        <div class="slds-box slds-theme_default slds-form-element__control slds-m-top_x-small search-bar" tabindex=-1 onclick={focusOnSingleSelectSearch}>
+            <template if:true={hasSelectedValue}>
+                <div class="slds-pill-container">
+                    <lightning-pill class="pill" label={selectedValue.label} onremove={handleSingleSelectRemove}>
+                        <lightning-icon icon-name={pillIcon} 
+                        class="slds-icon slds-icon_small slds-icon-text-default" size="x-small">
+                        </lightning-icon>
+                    </lightning-pill>
+                </div>
+            </template>
+            <template if:false={hasSelectedValue}>
+                <input data-id="singleSelectInput" type="search" tabindex="0" placeholder={inputPlaceholder} 
+                    class="slds-input inputBox" name="SearchValues" value={inputValue} 
+                    oninput={handleSingleSelectSearch} onclick={handleSingleSelectSearch} onkeydown={handleSingleSelectSearch} onfocus={handleFocus} onblur={handleBlur} 
+                    required={isRequired} autocomplete="off"/>
+            </template>
+            <div class="suggestion-list-container">
+                <template if:true={isFieldActive}>
+                    <div class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+                        <ul class="Slds-listbox ulsearch slds-listbox_vertical" role="presentation">
+                            <template for:each={searchResultValues} for:item="field">
+                                <li role="presentation" class="slds-listbox_item" key={field.value}>
+                                    <div class="searchitem slds-media slds-listbox_option slds-listbox_option_plain slds-media_small" onclick={handleSelectedValue}
+                                        title="" data-value={field.value} data-label={field.label}>
+                                        <span class="slds-media__body">
+                                            <span class="slds-p-around_small slds-listbox__option-text slds-listbox__option-text_entity">
+                                                {field.label}
+                                            </span>
+                                        </span>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+    <div if:false={isEditMode} class="ticket-form-element slds-form-element_readonly">
+        <template if:true={isRequired}>
+            <abbr class="slds-required slds-form-element__label" title="required">*</abbr>
+        </template>
+        <div class="slds-truncate"><b>{fieldLabel}</b></div>
+        <p class="slds-text-body_small">{filteredFieldDescription}</p>
+        <div class="ticket-form-element_input-wrapper slds-var-m-around-small">
+            <lightning-formatted-text
+                id={filteredFieldId}
+                value={singleSelectedValue}
+                class="slds-form-element__control ticket-form-element_field"
+            ></lightning-formatted-text>
+            <lightning-button-icon
+                if:false={hidePencilIcon}
+                onclick={handleEditMode}
+                class="ticket-form-element_icon"
+                icon-name="utility:edit"
+                variant="bare"
+            ></lightning-button-icon>
+        </div>
+    </div>
+</template>

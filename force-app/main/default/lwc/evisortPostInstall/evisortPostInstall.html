@@ -1,0 +1,349 @@
+<template>
+    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center">
+        <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+            <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                <h3 class="slds-text-heading_medium">Post-Install Script</h3>
+            </div>
+        </div>
+    </div>
+    <table class="slds-table slds-table_bordered slds-border_left slds-border_right">
+        <template if:true={isSpinner}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </template>
+        <template if:false={isSpinner}>
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate">Item</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate">Status</div>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Turn On Logs</div>
+                </th>
+                <td>
+                    <template if:true={isTurnOnLog}>
+                        <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                            title="success variant small" size="small"></lightning-icon>
+                    </template>
+                    <template if:false={isTurnOnLog}>
+                        <lightning-button class="slds-m-right_small" label="Go To Log Settings"
+                            icon-name="utility:new_window" onclick={openTurnOnLogSettings}></lightning-button>
+                        <br>
+                        Steps: 1. Click on Edit Button<br>
+                        2. Select Enable Logging Field and Save<br>
+                    </template>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Assign Evisort Admin Permission Set to Admin(s)</div>
+                </th>
+                <td>
+                    <lightning-button class="slds-m-right_small" label="Go To Evisort Admin Permission Set"
+                        icon-name="utility:new_window" onclick={openEvisortPermissionSet}></lightning-button><br>
+                    Steps: 1. Click on add Assignments <br>
+                    2. Select your user then click next and assign <br>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Add the Evisort Admin App to System Admin Profile</div>
+                </th>
+                <td>
+                    <template if:true={isAppPermission}>
+                        <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                            title="success variant small" size="small"></lightning-icon>
+                    </template>
+                    <template if:false={isAppPermission}>
+                        [ For More info: A System Admin profile is assigned the
+                        Evisort Admin App permission by default.
+                        <br> So we do not need to do anything. ]
+                    </template>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Assign Evisort User Permission Set to end users (ex. Sales
+                        Reps)</div>
+                </th>
+                <td>
+                    <lightning-button class="slds-m-right_small" label="Go To Evisort User Permission Set"
+                        icon-name="utility:new_window" onclick={openEvisortUserPermissionSet}></lightning-button><br>
+                    Steps: 1. Click on add Assignments <br>
+                    2. Select your user then click next and assign
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Evisort Admin App - Create Named Credential
+                    </div>
+                </th>
+                <td>
+                    <template if:false={isAuthenticate}>
+                        <lightning-button label={label.adminAuthSecondStepActionTitle} icon-name="utility:new_window"
+                            onclick={launchSetupNamedCredentials}></lightning-button>
+                    </template>
+                    <template if:true={isAuthenticate}>
+                        <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                            title="success variant small" size="small"></lightning-icon>
+                    </template>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Authenticate Evisort</div>
+                </th>
+                <td>
+                    <template if:true={AuthenticateStatus}>
+                        <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                            title="success variant small" size="small"></lightning-icon> <br>
+                    </template>
+                    <template if:false={AuthenticateStatus}>
+                        <lightning-button label={label.adminCheckValidation} icon-name="utility:new_window"
+                            title="Non-primary action" onclick={handleAuth}></lightning-button>
+                    </template>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Adding Evisort Object to Page Layouts</div>
+                </th>
+                <td>
+                    <template if:true={isAppPermission}>
+                        <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                            title="success variant small" size="small"></lightning-icon>
+                    </template>
+                    <template if:false={isAppPermission}>
+                        [ For More : A System Admin profile is assigned the
+                        Evisort Admin App permission by default.
+                        <br> So we do not need to do anything. ]
+                    </template>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Custom Settings for Base URL and Workspace Settings for
+                        Intake Forms
+                    </div>
+                </th>
+                <td>
+                    <lightning-accordion onsectiontoggle={handleToggleSection}
+                        active-section-name={accordianSection} allow-multiple-sections-open>
+                        <lightning-accordion-section style="margin-left : -14px" label="Click for Update">
+                            <lightning-input label="Domain" value={domain} onchange={handlerDomain}
+                                required></lightning-input>
+                            <lightning-input label="Sub-Domain" value={subDomain} onchange={handlerSubDomain}
+                                required></lightning-input>
+                            <lightning-input style="margin-bottom: 15px" label="WorkSpace" value={workspace}
+                                onchange={handlerWorkspace} required></lightning-input>
+                            <template if:true={updateEnable}>
+                                <lightning-button class="slds-m-top_small" label="Submit" variant="brand"
+                                    onclick={handlerPostInstallation}></lightning-button>
+                            </template>
+                            <template if:false={updateEnable}>
+                                <lightning-button class="slds-m-top_small" label="Submit"
+                                    onclick={handlerPostInstallation} disabled></lightning-button>
+                            </template>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Add Evisort Related List Lightning Web Component to <br> 
+                        Objects Page Layouts
+                    </div>
+                </th>
+                <td>
+                    Steps: 1. Go to Evisort record Page <br>
+                    2. Click on gear(settings) icon button <br>
+                    3. Click on Edit page <br>
+                    4. On the left side we have a component list. <br>
+                    If you scroll down below on Components. <br>
+                    In custom we have a "Eviosrt related list" component So just add it on the detail page<br>
+                    (Using drag)
+                    5. click on save
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Add Ticket List to Account Record Page</div>
+                </th>
+                <td>
+                    Steps: 1. Go to that record Page <br>
+                    2. Click on gear(settings) icon button <br>
+                    3. Click on Edit page <br>
+                    4. On the left side we have a component list. <br>
+                    If you scroll down below on Components. <br>
+                    In custom we have a "Ticket Related List" component So just add it on the detail page<br>
+                    (Using drag)
+                    5. click on save
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">TBD - Packaged post-install script to add opportunity
+                        Contract standard <br> objects to sync criteria custom setting
+                    </div>
+                </th>
+                <td>
+                    <lightning-icon icon-name="utility:success" alternative-text="Success!" variant="success"
+                        title="success variant small" size="small"></lightning-icon>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Schedule document sync process to look for changes in
+                        Evisort system, <br> and sync back to Salesforce
+                    </div>
+                </th>
+                <td>
+                    <template if:true={isDeleteJobSchedulerModel}>
+                        <c-modal is-open={isDeleteJobSchedulerModel} title={deleteHeader}
+                            confirm-label={label.adminDelete} close-label={label.adminClose}
+                            cancel-label={label.adminCancel} confirm-callback={deleteHandler}
+                            cancel-callback={closeModal}>
+                            <div slot="body">
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <h1> {deleteInformation}</h1>
+                                </div>
+                            </div>
+                        </c-modal>
+                    </template>
+
+                    <c-evisort-post-install-Schedule-Job open-modal={isModalOpen} onjobdetails={handleClick}
+                        onisclose={isModalClose}></c-evisort-post-install-Schedule-Job>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_3-of-4 ">
+                            <span>Evisort Document Sync Schedule Job (Evisort To SF)</span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4 ">
+                            <template if:true={isSchedule}>
+                                <lightning-button label="Schedule" value={label.adminDocumentSyncJob}
+                                    onclick={scheduleHandler}></lightning-button>
+                            </template>
+                            <template if:false={isSchedule}>
+                                <div style="margin-left : -20px">
+                                    <lightning-button label="Edit" onclick={editScheduleHandler}
+                                        value={label.adminDocumentSyncJob}></lightning-button>
+                                    <lightning-button label="Delete" class="slds-m-left_x-small"
+                                        onclick={isDeleteJobShedular} value={label.adminDocumentSyncJob}></lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_x-small">
+                        <div class="slds-col slds-size_3-of-4">
+                            <span>Metadata Sync Schedule Job (SF To Evisort)</span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <template if:true={isScheduleMetaData}>
+                                <lightning-button label="Schedule" onclick={metadataHourlyHandler}
+                                    value={label.adminMetaDataSyncJob}></lightning-button>
+                            </template>
+                            <template if:false={isScheduleMetaData}>
+                                <div style="margin-left : -20px">
+                                    <lightning-button label="Edit" onclick={editScheduleHandler}
+                                        value={label.adminMetaDataSyncJob}></lightning-button>
+                                    <lightning-button label="Delete" class="slds-m-left_x-small"
+                                        onclick={metadataHourlyDeleteHandler}
+                                        value={label.adminMetaDataSyncJob}></lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-m-top_x-small">
+                        <div class="slds-col slds-size_3-of-4">
+                            <span> Export Legacy Clean Up Job </span>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            <template if:true={isScheduleExportLegacy}>
+                                <lightning-button label="Schedule" onclick={ExportLegacyHandler}
+                                    value={label.adminExportLegacyLeanupJob}></lightning-button>
+                            </template>
+                            <template if:false={isScheduleExportLegacy}>
+                                <div style="margin-left : -20px">
+                                <lightning-button label="Edit" onclick={editScheduleHandler}
+                                    value={label.adminExportLegacyLeanupJob}></lightning-button>
+                                <lightning-button label="Delete" class="slds-m-left_x-small"
+                                    onclick={exportLegacyDeleteHandler}
+                                    value={label.adminExportLegacyLeanupJob}></lightning-button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Reports and Analytics</div>
+                </th>
+                <td>
+                    <lightning-icon class="slds-col" align="right" vertical size="x-small"
+                        icon-name="utility:close"></lightning-icon> <br>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Create “New Intake Form” button</div>
+                </th>
+                <td>
+                    Step 1. Go to Setup. <br>
+                    2. Click on Object Manager and Select Object.<br>
+                    3. Click on "Button, Links and Actions" and then "New Action" Button.<br>
+                    4. Select Action Type to Lightning Web Component, Lightning Web Component to <br>
+                       c:intakeForm, Label - Intake Form, Name- Intake_Form and Click on Save.<br>
+                    5. Go to Page layouts (Below "Field & Relationship").<br>
+                    6. Select "Mobile & Lightning Actions" then Drag "Intake Form" and Drop in Salesforce <br> 
+                       "Mobile and Lightning Experience Actions".<br>
+                    7. Click on Save Button.<br>
+                </td>
+            </tbody>
+
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Enable Field History for Evisort Ticket object</div>
+                </th>
+                <td>
+                    Step 1. Go to Setup.<br>
+                    2. Click on Object Manager and Select Object.<br>
+                    3. Click on "Field & Relationship" then Set History Tracking.<br>
+                    4. Check Enable History checkbox.<br>
+                    5. Select those fields which you want track the field history then click on Save Button<br>
+                </td>
+            </tbody>
+
+            <tbody>
+                <th scope="row">
+                    <div class="slds-truncate">Enable Content Document For User</div>
+                </th>
+                <td>
+                    Step 1. Go to Setup. <br>
+                    2. Search Users in Quick Find Box then click on Users then Select user. <br>
+                    3. Click on Edit button and check 'Salesforce CRM Content User'. <br>
+                    4. Click on Save Button. <br>
+                </td>
+            </tbody>
+        </template>
+    </table>
+</template>

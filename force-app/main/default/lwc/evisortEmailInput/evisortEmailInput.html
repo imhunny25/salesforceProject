@@ -1,0 +1,70 @@
+<template>
+    <div class="slds-combobox_container">
+        <div class={boxClass}>
+            <div class="slds-combobox__form-element">
+                <div class={searchBoxClasses} tabindex=-1 onclick={focusOnSearchInput}>
+                    <template for:each={selectedValues} for:item="selectedValue" for:index="index">
+                        <div class="slds-var-m-top_x-large pill-container" style="display: inline;" key={selectedValue}>
+                            <lightning-pill
+                                class="slds-m-right_x-small slds-m-bottom_small pill"
+                                label={selectedValue}
+                                onremove={handleRemove}
+                                data-index={index}
+                            ></lightning-pill>
+                        </div>
+                    </template>
+                    <input
+                        data-id="searchInput"
+                        class="input slds-input form-control"
+                        onkeyup={handleSearch}
+                        onkeydown={handleKeyPress}
+                        placeholder={inputPlaceholder}
+                        type="search"
+                        maxlength="50"
+                        onclick={handleSearch}
+                        onfocus={handleFocus}
+                        onblur={handleBlur}
+                        autocomplete="off" 
+                    />
+                </div>
+                <template if:false={isValidInput}>
+                    <div class="slds-text-color_error">{label.ticketShareEmailError}</div>
+                </template>
+            </div>
+            <!-- List Start -->
+            <div
+                class="slds-dropdown slds-dropdown_length-with-icon-5 slds-dropdown_fluid"
+                role="listbox"
+                if:true={hasItems}
+            >
+                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                    <template for:each={items} for:item="item" for:index="index">
+                        <li
+                            key={item.Id}
+                            data-id={item.Id}
+                            onclick={onSelect}
+                            role="presentation"
+                            class="slds-listbox__item"
+                        >
+                            <div
+                                class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                role="option"
+                            >
+                                <lightning-icon class="slds-media__figure slds-listbox__option-icon" icon-name="standard:contact" size="small" aria-hidden="true"></lightning-icon>
+                                <span class="slds-media__body slds-p-vertical_xx-small">
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        {item.Name}
+                                    </span>
+                                    <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">
+                                        {item.Email}
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            <!-- List End -->
+        </div>
+    </div>
+</template>

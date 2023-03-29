@@ -1,0 +1,20 @@
+<template>
+    <ul class="slds-timeline slds-p-around_medium">
+        <template for:each={activityData} for:item="activity">
+            <li key={activity.id}>
+                <div class="slds-timeline__item_expandable slds-timeline__item_task activity-log_item">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <div class="slds-icon_container slds-icon-standard-task slds-timeline__icon">
+                                <lightning-icon icon-name="standard:task" size="small"></lightning-icon>
+                            </div>
+                        </div>
+                        <div class="slds-media__body">
+                            <c-ticket-activity-item activity-item={activity}></c-ticket-activity-item>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </template>
+    </ul>
+</template>

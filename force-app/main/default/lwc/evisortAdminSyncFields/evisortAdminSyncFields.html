@@ -1,0 +1,120 @@
+<template>
+    <template if:false={activestate}>
+        <div class="slds-col">
+            <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center slds-var-p-bottom_medium">
+                <c-evisort-Icon cls="evisort-svg"></c-evisort-Icon>
+                <h3 class="slds-text-heading_medium" style="margin-bottom: 5px;">{label.adminSyncFieldsTab}</h3>
+            </div>
+        </div>
+        <div class="slds-illustration slds-illustration_small">
+            <img src={noAccessSVG} class="slds-illustration__svg" />
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium">{label.adminYouNotAreAuthenticated}</h3>
+                <p>{label.adminNotAuthenticatedInstructions}</p>
+            </div>
+        </div>
+    </template>
+    <template if:true={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center"
+        >
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium" style="margin-bottom: 5px;">{label.adminSyncObjectMappingTab}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminSyncObjectMappingBody}</p>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-var-m-bottom_medium slds-grid_align-end">
+            <div class="slds-col">
+                <lightning-button
+                    label={label.adminSetObjectMapping}
+                    icon-name="utility:add"
+                    onclick={addForm}
+                ></lightning-button>
+            </div>
+        </div>
+            <c-modal
+                    is-open={isModalOpen}
+                    title="Map object fields with Evisort"
+                    confirm-label={label.adminSave}
+                    close-label={label.adminClose}
+                    cancel-label={label.adminCancel}
+                    confirm-callback={confirmCallback}
+                    cancel-callback={cancelCallback}
+                    inner-classes="scrollable"
+                    increase-model-width="true"
+                    onclick={handleModalClick}
+                >
+                <div slot="body">
+
+                    
+                    <template if:true={editDataLoaded}>
+                        <c-s-object-field-mapping-form
+                            mapped-record={mappedRecord}
+                            onupdatefieldrow={handleUpdateFieldRow}
+                            class="set-form-min-width slds-scrollable"
+                        >
+                        </c-s-object-field-mapping-form>
+                    </template>
+                </div>
+            </c-modal>
+
+            <c-modal
+                    is-open={isDeleteModalOpen}
+                    title="Delete Map Object Field With Evisort"
+                    confirm-label={label.adminDelete}
+                    close-label={label.adminClose}
+                    cancel-label={label.adminCancel}
+                    confirm-callback={deleteConfirmCallback}
+                    cancel-callback={deleteCancelCallback}
+                >
+                    <p slot="body">{label.adminMetadataObjectfieldsSyncedDeleteBody}</p>
+            </c-modal>    
+        <div class="slds-card slds-scrollable_y slds-scrollable_x evisort-sync-table ">
+            <lightning-datatable
+                    data={records}
+                    columns={metadataObjectFieldsColumns}
+                    key-field="id"
+                    hide-checkbox-column
+                    show-row-number-column
+                    sorted-by={sortBy}
+                    sorted-direction={sortDirection}
+                    onrowaction={handleRowAction}
+                    onsort={updateColumnSorting}
+                    min-column-width="100"
+                >
+                </lightning-datatable>
+        </div>
+
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center"
+        >
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center" style="margin-top: 20px">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminSyncFieldsTab}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminSyncFieldsBody}</p>
+            </div>
+        </div>
+        <div class="slds-card slds-scrollable_y evisort-sync-table">
+            <lightning-datatable
+                data={fieldData}
+                columns={columns}
+                key-field="id"
+                wrap-text-max-lines="10"
+                onsave={handleSave}
+                draft-values={draftValues}
+                sorted-by={sortBy}
+                sorted-direction={sortDirection}
+                onsort={handleSortData}
+                min-column-width="100">
+            </lightning-datatable>
+            <div class="spinner" if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+            </div>
+        </div>
+    </template>
+</template>

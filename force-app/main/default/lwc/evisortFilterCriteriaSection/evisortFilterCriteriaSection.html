@@ -1,0 +1,42 @@
+<template >
+    <template if:true={displayFilters}>
+        <div class="slds-section slds-is-open">
+            <template if:true={isAddRow}>
+                <div aria-hidden="false" class="slds-section__content" id='1'>  
+                    <template if:true={isShowAndOrCondition}>
+                        <div class="slds-grid slds-wrap">   
+                            <div class="slds-col slds-size_3">
+                                <lightning-combobox
+                                    class="fit-content"
+                                    name="conditon"
+                                    label="Conditon"
+                                    value={conditionValue}
+                                    onchange={handleConditonChange}
+                                    options={conditonOptions}
+                                    disabled={rowsDisable}
+                                    required>
+                                </lightning-combobox>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                <div class="slds-form-element slds-form-element_compound slds-p-horizontal_small" if:true={refreshList}>	
+                    <template  for:each={rows} for:item="row" for:index="index">
+                        <c-evisort-filter-criteria-row key={row.Id} index={index} fields-wrappers={fieldsWrapper} row-from-parent={row} sobject-name={sobjectName} onupdaterow={handleRowUpdate} row-disable={rowsDisable}></c-evisort-filter-criteria-row> 
+                    </template>
+                </div>
+            </template>
+      
+            <lightning-button class="slds-button slds-m-top_small slds-m-left_medium"
+                onclick={handleAddMore} 
+                label={label.adminAddCondition}
+                icon-name="utility:add"
+                disabled={rowsDisable}>
+                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                    <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#add"></use>
+                </svg>
+            </lightning-button>
+        </div>
+    </template>
+</template>

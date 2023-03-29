@@ -1,0 +1,11 @@
+:host {
+    --sds-c-icon-color-background: #ffc449;
+}
+
+.slds-timeline__item_task:before {
+    background: var(--sds-c-icon-color-background);
+}
+
+.activity-log_item::before {
+    left: 0.8rem;
+}

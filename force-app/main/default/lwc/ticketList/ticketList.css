@@ -1,0 +1,4 @@
+.view-ticket_footer {
+    display: flex;
+    justify-content: space-between;
+}

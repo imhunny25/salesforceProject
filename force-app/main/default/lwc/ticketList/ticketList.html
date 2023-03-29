@@ -1,0 +1,177 @@
+<template>
+    <article class="slds-card slds-card_boundary slds-is-relative">
+        <div
+            class="slds-page-header slds-page-header_joined slds-page-header_bleed slds-shrink-none test-headerRegion slds-is-relative"
+        >
+            <div class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-col slds-has-flexi-truncate firstHeaderRow">
+                    <div class="slds-media slds-no-space slds-grow">
+                        <lightning-icon
+                            icon-name="standard:contract"
+                            class="slds-m-right_small"
+                            alternative-text={labels.ticketRelatedListHeader}
+                            size="small"
+                        >
+                        </lightning-icon>
+                        <h2 class="slds-card__header-title">
+                            <a
+                                href="#"
+                                class="slds-card__header-link slds-truncate"
+                                title={labels.ticketRelatedListHeader}
+                            >
+                                <template if:true={isViewAll}>
+                                    <span>{labels.ticketAllRelatedListHeader}</span>
+                                </template>
+                                <template if:false={isViewAll}>
+                                    <span>{labels.ticketRelatedListHeader}</span>
+                                </template>
+                            </a>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <template if:true={isLoading}>
+            <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+        </template>
+        <template if:false={isLoading}>
+            <h2 if:false={hasTickets} class="slds-text-heading_medium slds-m-around_medium slds-align_absolute-center">
+                {labels.ticketRelatedListEmpty}
+            </h2>
+            <template if:true={hasTickets}>
+                <c-ticket-list-table
+                    key-field="id"
+                    is-loading={isLoading}
+                    data={tickets}
+                    columns={columns}
+                    default-sort-direction="desc"
+                    sorted-direction={sortedDirection}
+                    sorted-by={sortedBy}
+                    onsort={handleSort}
+                    record-id={currentRecord}
+                    object-api-name={currentObjectApiName}
+                    hide-checkbox-column
+                >
+                </c-ticket-list-table>
+                <footer if:true={showFooter} class="slds-card__footer slds-m-top_none">
+                    <a class="slds-card__footer-action" href="#" onclick={handleViewAll}
+                        >{labels.ticketRelatedListViewAll}
+                        <span class="slds-assistive-text">{labels.ticketRelatedListViewAll}</span>
+                    </a>
+                </footer>
+            </template>
+        </template>
+    </article>
+
+    <template if:true={showModal}>
+        <c-modal
+            is-open={showModal}
+            title={selectedTicket.evisortName}
+            close-label={labels.ticketModalClose}
+            cancel-callback={closeModal}
+            inner-classes="slds-p-bottom_none"
+        >
+            <div class="slds-is-relative" slot="body">
+                <div if:true={isSubmitting}>
+                    <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+                    <p class="slds-text-align--center"><strong>{labels.ticketModalIsSubmitting}</strong></p>
+                </div>
+                <c-ticket-modal-tabs
+                    ticket-record-id={selectedTicket.id}
+                    onticketstate={handleTicketState}
+                    oneditingcancel={handleEditingClose}
+                    oneditingsave={handleEditingClose}
+                    show-unsaved-error={showUnsavedError}
+                    onerrorclose={handleUnsavedErrorClose}
+                    record-id={currentRecord}
+                    object-api-name={currentObjectApiName}
+                ></c-ticket-modal-tabs>
+            </div>
+
+            <footer slot="footer" class="slds-modal__footer view-ticket_footer">
+                <lightning-button
+                    label={labels.ticketViewTicketBtnText}
+                    icon-name="utility:new_window"
+                    onclick={openEvisortDocumentation}
+                    class="slds-m-left_x-small"
+                ></lightning-button>
+                <div>
+                    <lightning-button
+                        if:false={hideNextStageBtn}
+                        label={submitLabel}
+                        variant="neutral"
+                        onclick={handleSubmitNextStage}
+                        class="slds-m-right_small"
+                        disabled={isSubmitDisabled}
+                    ></lightning-button>
+                    <lightning-button
+                        label={labels.ticketModalClose}
+                        variant="brand"
+                        onclick={closeModal}
+                    ></lightning-button>
+                </div>
+            </footer>
+        </c-modal>
+        <c-modal
+            is-open={showConfirmationModal}
+            title={submitLabel}
+            close-label={labels.ticketConfirmationModalBack}
+            cancel-callback={closeConfirmationModal}
+        >
+            <p class="slds-text-align--center" slot="body"><strong>{confirmModalText}</strong></p>
+            <footer slot="footer" class="slds-modal__footer">
+                <lightning-button
+                    label={labels.ticketConfirmationModalSubmit}
+                    variant="neutral"
+                    onclick={handleSubmit}
+                    class="slds-m-right_small"
+                    disabled={isSubmitDisabled}
+                ></lightning-button>
+                <lightning-button
+                    label={labels.ticketConfirmationModalBack}
+                    variant="brand"
+                    onclick={closeConfirmationModal}
+                ></lightning-button>
+            </footer>
+        </c-modal>
+    </template>
+    <template if:true={showIsDeletedModal}>
+        <c-modal
+            is-open={showIsDeletedModal}
+            title={selectedTicket.evisortName}
+            close-label={labels.ticketModalClose}
+            cancel-callback={closeIsDeletedModal}
+        >
+            <div class="slds-is-relative" slot="body">
+                <p class="slds-text-align--center slds-text-color_error">
+                    <strong>Ticket has been deleted from Evisort</strong>
+                </p>
+                <div class="slds-text-body_regular">
+                    <strong>{labels.ticketNameColumnHeader}:</strong> {selectedTicket.evisortName}
+                </div>
+                <div class="slds-text-body_regular">
+                    <strong>{labels.ticketEvisortIdLabel}:</strong> {selectedTicket.evisortId}
+                </div>
+                <div class="slds-text-body_regular">
+                    <strong>{labels.ticketSubByColumnHeader}:</strong> {selectedTicket.submittedBy}
+                </div>
+                <div class="slds-text-body_regular">
+                    <strong>{labels.ticketSubOnColumnHeader}:</strong> {selectedTicket.createdDate}
+                </div>
+                <div class="slds-text-body_regular">
+                    <strong>{labels.ticketStageLabel}:</strong> {selectedTicket.stage}
+                </div>
+                <div class="slds-text-body_regular">
+                    <strong>{labels.ticketStatusColumnHeader}:</strong> {selectedTicket.status}
+                </div>
+            </div>
+            <footer slot="footer" class="slds-modal__footer">
+                <lightning-button
+                    label={labels.ticketModalClose}
+                    variant="brand"
+                    onclick={closeModal}
+                ></lightning-button>
+            </footer>
+        </c-modal>
+    </template>
+</template>

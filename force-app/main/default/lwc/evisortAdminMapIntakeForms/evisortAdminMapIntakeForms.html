@@ -1,0 +1,190 @@
+<template>
+    <template if:false={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center"
+        >
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminMapIntakeFormsTitle}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="slds-illustration slds-illustration_small">
+            <img src={noAccessSVG} class="slds-illustration__svg" />
+
+            <div class="slds-text-longform">
+                <h3 class="slds-text-heading_medium">{label.adminYouNotAreAuthenticated}</h3>
+                <p>{label.adminNotAuthenticatedInstructions}</p>
+            </div>
+        </div>
+    </template>
+    <template if:true={activestate}>
+        <div
+            class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform slds-text-align_center"
+        >
+            <div class="slds-col evisort-tab-summary slds-var-p-bottom_medium">
+                <div class="slds-grid slds-grid_vertical-align-end slds-grid_align-center">
+                    <c-evisort-Icon cls="evisort-svg slds-var-m-bottom_small"></c-evisort-Icon>
+                    <h3 class="slds-text-heading_medium">{label.adminMapIntakeFormsTitle}</h3>
+                </div>
+                <p class="slds-text-body_regular">{label.adminMapIntakeFormsBody}</p>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-var-m-bottom_medium slds-grid_align-end">
+            <div class="slds-col">
+                <lightning-button
+                    label="Map New Intake Form"
+                    icon-name="utility:add"
+                    onclick={addForm}
+                ></lightning-button>
+            </div>
+        </div>
+        
+        <!-- add settings component to toggle between all/mapped-->
+        <c-evisort-admin-map-intake-form-settings></c-evisort-admin-map-intake-form-settings>
+
+        <template if:true={isDataTableLoaded}>
+            <div class="slds-card slds-scrollable_x slds-scrollable_y evisort-sync-table slds-scrollable">
+                <lightning-datatable
+                    data={records}
+                    columns={columns}
+                    key-field="id"
+                    wrap-text-max-lines="10"
+                    sorted-by={sortBy}
+                    sorted-direction={sortDirection}
+                    onrowaction={handleRowAction}
+                    onsort={updateColumnSorting}
+                    min-column-width="100"
+                >
+                </lightning-datatable>
+            </div>
+        </template>
+        <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-center slds-text-longform">            
+            <div class="slds-col">
+                <c-modal
+                    if:true={activeItem}
+                    is-open={isModalOpen}
+                    title={label.adminMapIntakeFormsEdit}
+                    confirm-label={label.adminSave}
+                    close-label={label.adminClose}
+                    cancel-label={label.adminCancel}
+                    confirm-callback={confirmCallback}
+                    cancel-callback={cancelCallback}
+                    inner-classes="scrollable"
+                >
+                    <div slot="body" if:true={optionsLoaded}>
+                        <div
+                            class="slds-scoped-notification slds-media slds-media_center slds-scoped-notification_light slds-m-bottom_medium"
+                            role="status"
+                        >
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-utility-info" title="information">
+                                    <lightning-icon icon-name="utility:info"></lightning-icon>
+                                    <span class="slds-assistive-text">information</span>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <p>{label.adminMapIntakeFormsWarning}</p>
+                                <p>
+                                    <a target="_blank" rel="noopener noreferrer" href={evsDocLink}
+                                        >{label.adminOtherOptionsAdminSetupGuideAction}</a
+                                    >
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_2-of-5">
+                                <lightning-combobox
+                                    name="workflow"
+                                    label={label.adminMapIntakeFormsWorkflow}
+                                    value={activeItem.workflowId}
+                                    placeholder={label.adminMapIntakeFormsWorkflow}
+                                    options={forms}
+                                    data-field
+                                    required
+                                    disabled={activeItem.id}
+                                    onchange={handleIntakeFormChange}
+                                >
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_2-of-5">
+                                <lightning-combobox
+                                    name="object"
+                                    label={label.adminMapIntakeFormsSalesforceObject}
+                                    value={activeItem.salesforceObject}
+                                    placeholder={label.adminMapIntakeFormsSalesforceObject}
+                                    options={sObjects}
+                                    data-field
+                                    required
+                                    onchange={handleObjectChange}
+                                >
+                                </lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-5 slds-m-top_xx-small">
+                                <div>&nbsp;</div>
+                                <lightning-button
+                                    label={label.adminMapIntakeFormsClear}
+                                    onclick={reset}
+                                ></lightning-button>
+                            </div>
+                        </div>
+
+                        <div if:true={showMappings}>
+                            <div if:true={activeItem.mappings.length} class="slds-grid slds-wrap slds-m-top_small">
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                                    <label>{label.adminMapIntakeFormsWorkflowFields}</label>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-3 slds-large-size_3-of-4">
+                                    <label>{label.adminMapIntakeFormsMappedObjectFields}</label>
+                                    <lightning-helptext
+                                        class="slds-m-left_xx-small slds-p-top_xxx-small"
+                                        content={label.adminMapIntakeFormsHelptip}
+                                    ></lightning-helptext>
+                                </div>
+                            </div>
+                            <template for:each={activeItem.mappings} for:item="mapping">
+                                <div class="slds-grid slds-wrap slds-p-vertical_x-small" key={mapping.workflowFieldId}>
+                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_1-of-4">
+                                        <label>{mapping.workflowFieldName}</label>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-3 slds-large-size_3-of-4">
+                                        <c-evisort-mappable-fields-in-intake-form
+                                            mapping={mapping}
+                                            data-workflow-field-id={mapping.workflowFieldId}
+                                            options={fieldOption}
+                                            active-item={activeItem}
+                                            onselectedobjectfield={handleUpdateMapping}
+                                            onclearselectedfield={handleToggleMappingType}
+                                            >
+                                        </c-evisort-mappable-fields-in-intake-form>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div if:false={showMappings}>
+                            <div class="ev-spinnerContainer--small">
+                                <lightning-spinner></lightning-spinner>
+                            </div>
+                        </div>
+                    </div>
+                    <div if:false={optionsLoaded} class="slds-is-relative ev-spinnerContainer--full">
+                        <lightning-spinner></lightning-spinner>
+                    </div>
+                </c-modal>
+                <c-modal
+                    is-open={isDeleteModalOpen}
+                    title={label.adminMapIntakeFormsDeleteTitle}
+                    confirm-label={label.adminDelete}
+                    close-label={label.adminClose}
+                    cancel-label={label.adminCancel}
+                    confirm-callback={deleteConfirmCallback}
+                    cancel-callback={deleteCancelCallback}
+                >
+                    <p slot="body">{label.adminMapIntakeFormsDeleteBody}</p>
+                </c-modal>
+            </div>
+        </div>
+    </template>
+</template>

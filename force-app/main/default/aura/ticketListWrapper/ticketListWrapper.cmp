@@ -1,0 +1,7 @@
+<aura:component implements="lightning:isUrlAddressable,force:hasSObjectName" access="global">
+    <aura:attribute type="String" name="navRecordProperty" />
+    <aura:attribute type="String" name="navObjectAPIName" />
+    <aura:attribute type="Boolean" name="isViewAll" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <c:ticketList navRecordProperty="{!v.navRecordProperty}" isViewAll="{!v.isViewAll}" navObjectAPIName ="{!v.navObjectAPIName}"></c:ticketList>
+</aura:component>

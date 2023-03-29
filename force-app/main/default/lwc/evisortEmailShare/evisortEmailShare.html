@@ -1,0 +1,107 @@
+<template>
+    <template if:true={isModalOpen}>
+        <section role="dialog" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-m-top_xx-large slds-m-bottom_xx-large">
+            <div class="slds-modal__container set-width">
+                <template if:true={loading}>
+                    <lightning-spinner alternative-text="Loading..." size="medium"> </lightning-spinner>
+                </template>
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">{label.adminClose}</span> 
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{label.ticketShareDocument}</h2>
+                </header>
+                <article class="slds-card slds-scrollable">
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-form form slds-var-p-top_small">
+                            <div class="slds-form-element slds-form-element_1-col">
+                                <label class="slds-form-element__label" for="to"><strong>{label.ticketToRecipients}</strong></label>
+                                <div class="slds-form-element__control">
+                                    <c-evisort-email-input 
+                                        ticket-record-id={ticketRecordId}
+                                        onselection={handleToAddressChange}
+                                        onvalidity={handleValidityCheck}>
+                                    </c-evisort-email-input>
+                                </div>
+                            </div>
+                            <template if:false={showCCInput}>
+                                <lightning-button variant="base" onclick={handleCcClick} label="CC" class="slds-m-right_small strong-text"></lightning-button>
+                            </template>
+                            <template if:true={showCCInput}>
+                                <div class="slds-form-element slds-form-element_1-col">
+                                    <label class="slds-form-element__label" for="cc"><strong>Cc</strong></label>
+                                    <div class="slds-form-element__control">
+                                        <c-evisort-email-input 
+                                            ticket-record-id={ticketRecordId}
+                                            onselection={handleCcAddressChange}
+                                            onvalidity={handleValidityCheck}>
+                                        </c-evisort-email-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:false={showBCCInput}>
+                                <lightning-button variant="base" onclick={handleBccClick} label="BCC" class="strong-text"></lightning-button>
+                            </template>
+                            <template if:true={showBCCInput}>
+                                <div class="slds-form-element slds-form-element_1-col">
+                                    <label class="slds-form-element__label" for="cc"><strong>Bcc</strong></label>
+                                    <div class="slds-form-element__control">
+                                        <c-evisort-email-input 
+                                            ticket-record-id={ticketRecordId}
+                                            onselection={handleBccAddressChange}
+                                            onvalidity={handleValidityCheck}>
+                                        </c-evisort-email-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label"><strong>{label.ticketShareSubject}</strong></label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input
+                                        variant="label-hidden"
+                                        type="text"
+                                        name="subject"
+                                        value={subject}
+                                        placeholder="Subject..."
+                                        onchange={handleSubjectChange}
+                                    ></lightning-input>
+                                </div>
+                            </div>
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label"><strong>{label.ticketShareMessage}</strong></label>
+                                <div class="slds-form-element__control slds-var-p-top_small">
+                                    <lightning-input-rich-text value={body} formats={formats} onchange={handleBodyChange}></lightning-input-rich-text>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-var-p-around_medium">
+                        <div class="slds-m-bottom_small"><strong>{label.ticketShareAttachments}</strong></div>
+                        <lightning-icon
+                            icon-name="doctype:attachment"
+                            size="small"
+                            alternative-text="attach"
+                        ></lightning-icon>
+                        <span class="slds-m-around_small">{file.name}</span>
+                    </div>
+                    <div class="slds-grid slds-grid_align-end slds-var-p-around_x-small">
+                        <div class="slds-col slds-var-p-right_x-small slds-var-p-bottom_x-small">
+                            <lightning-button label={label.adminCancel} title="Cancel" onclick={closeModal}></lightning-button>
+                        </div>
+                        <div class="slds-col slds-var-p-right_x-small slds-var-p-bottom_x-small">
+                            <lightning-button
+                                variant="brand"
+                                label={label.ticketShare}
+                                title="Share"
+                                disabled={disableShare}
+                                onclick={handleShareEmail}
+                            ></lightning-button>
+                        </div>
+                    </div>
+                </article>
+                </div>
+            </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

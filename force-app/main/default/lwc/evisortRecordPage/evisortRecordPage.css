@@ -1,0 +1,9 @@
+.provision-header {
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.25;
+}
+
+.provision hr {
+    margin: var(--lwc-spacingXSmall) 0;
+}

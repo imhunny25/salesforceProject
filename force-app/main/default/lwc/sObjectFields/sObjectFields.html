@@ -1,0 +1,87 @@
+<template>
+    <div class="slds-form-element slds-m-around_xxx-large">
+        <div class="slds-form-element__control slds-m-bottom_small">
+            <div class="slds-combobox-group">
+                <template if:true={isDefaultObject}>
+                    <div class="slds-combobox_object-switcher slds-combobox-addon_start">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <div class="slds-combobox_container">
+                                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-controls="primary-combobox-id-2">
+                                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                                            <button type="button" class="slds-input_faux slds-combobox__input slds-combobox__input-value set-button-width" aria-labelledby="combobox-label-id-80 combobox-id-31-selected-value" 
+                                                aria-controls="objectswitcher-listbox-id-01" aria-expanded="false" aria-haspopup="listbox">
+                                                <span class="slds-truncate" title={selectedObjects}>{selectedObjects}</span>
+                                            </button>
+                                            <span class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right slds-m-right_x-small">
+                                                <lightning-icon class="slds-col" align="right" vertical size="x-small" icon-name="utility:right"></lightning-icon>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <div class="slds-combobox_container slds-combobox-addon_end slds-m-right_large">
+                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_group-right" role="none">
+                            <input type="search" class="slds-input slds-combobox__input slds-has-focus slds-combobox__input-value fieldNameComp input-min-width" aria-activedescendant="option0" aria-autocomplete="list" aria-controls="listbox-id-23" aria-expanded="true" aria-haspopup="listbox"
+                            autocomplete="off" role="combobox" placeholder="Search..." value={searchInput} onclick={handleFieldSearch} onchange={handleFieldSearch} onkeydown={handleFieldSearch} oninput={handleFieldSearch} onblur={handleSearchBlur} onfocus={handleSearchFocus} disabled={isInputDisabled}>
+                            <div class="slds-input__icon-group slds-input__icon-group_right">
+                                <template if:false={isfieldListLoaded}>
+                                    <div role="status" class="slds-spinner slds-spinner_brand slds-spinner_x-small slds-input__spinner">
+                                        <span class="slds-assistive-text">{label.adminLoading}</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </template>
+                                <template if:true={showClose}>
+                                    <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Remove selected option" onclick={clearSearchField}>
+                                        <lightning-icon class="slds-col" align="right" vertical size="x-small" icon-name="utility:close"></lightning-icon>
+                                        <span class="slds-assistive-text">{label.adminRemoveSelectedOption}</span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                        <span class="slds-text-color_error slds-text-title " id="help"  aria-live="assertive">{errorLabel}</span>
+                        <template if:true={showListView}>
+                            <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" onclick={handleListClick}>
+                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                    <template for:each={searchResultFields} for:item="searchResultField">
+                                        <li role="presentation" class="slds-listbox__item" 
+                                            key={searchResultField.value} 
+                                            for:index={index} 
+                                            data-selectedfieldvalue={searchResultField.value} 
+                                            data-label={searchResultField.label} 
+                                            onclick={handleFieldSelection} 
+                                            data-selectedtype={searchResultField.datatype}
+                                            data-relationship-name={searchResultField.relationshipName}
+                                            data-reference-to={searchResultField.referenceTo}>
+                                            <div class="slds-align-middle slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" 
+                                                role="option" 
+                                                >
+                                                <span class="slds-align-middle slds-media__body slds-p-vertical_xx-small">
+                                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                                        <span>{searchResultField.label}</span>
+                                                    </span>
+                                                </span>
+                                                <template if:true={searchResultField.isReference}>
+                                                    <span class="slds-align-middle slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right slds-m-right_x-small icon-container">
+                                                        <lightning-icon class="slds-col icon-wrapper icn" align="right" vertical size="x-small" icon-name="utility:chevronright"></lightning-icon>
+                                                    </span>
+                                                </template>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </template>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</template>

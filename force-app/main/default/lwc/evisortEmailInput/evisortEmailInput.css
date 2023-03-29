@@ -1,0 +1,56 @@
+.input {
+    padding: 0; 
+    display: inline;
+    width: 100%;
+    border: none;
+    position: relative;
+    margin-left: 0.2rem;
+}
+
+.input:focus, .input:active {
+    outline: 0;
+    outline-width: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.slds-input {
+    --lwc-heightInput: 1.5rem;
+    --lwc-fontSizeSmall: 1rem;
+    min-height: calc(var(--lwc-heightInput,1.6rem) + (var(--lwc-borderWidthThin,1px)*1));
+}
+
+.search-bar {
+    border: 1px solid lightgrey;
+    padding: 0.2rem;
+    min-height: 1.1rem;
+}
+
+.pill-container.pill {
+    display: inline;
+    margin: 0.2rem;
+}
+
+.pill-container {
+    padding: 0.2rem;
+    width:auto;
+    display: inline;
+}
+
+.valid-input {
+    outline: 0;
+    border-color: rgb(21, 137, 238); /* This is the blue color of the border */
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 3px #0070d2; /* This is the blue color of the shadow */
+}
+
+.invalid-input {
+    outline: 0;
+    border-color: rgb(238, 21, 21); /* This is the blue color of the border */
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 3px #d20000; /* This is the blue color of the shadow */
+}
+
+.slds-form-element__help {
+    margin-left: 0;
+}

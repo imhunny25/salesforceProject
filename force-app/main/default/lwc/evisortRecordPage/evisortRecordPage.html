@@ -1,0 +1,137 @@
+<template>
+    <lightning-card>
+        <h3 slot="title">
+            <c-evisort-Icon cls="evisort-svg"></c-evisort-Icon>
+            {label.adminEvisortFields}
+        </h3>
+        <div slot="actions">
+            <lightning-button
+                variant="brand"
+                disabled={saveDisabled}
+                label={label.adminSaveAndApply}
+                title={label.adminSaveAndApply}
+                icon-name="utility:save"
+                class="slds-var-m-left_x-small"
+                onclick={handleSave}
+            ></lightning-button>
+        </div>
+        <div class="slds-var-p-horizontal_small">
+            <template if:true={data}>
+                <lightning-accordion active-section-name={activeSections} allow-multiple-sections-open>
+                    <template for:each={data.sections} for:item="fieldSection">
+                        <lightning-accordion-section
+                            name={fieldSection.sectionName}
+                            label={fieldSection.sectionName}
+                            key={fieldSection.values}
+                        >
+                            <div class="slds-grid slds-gutters slds-wrap slds-theme_shade">
+                                <template for:each={fieldSection.values} for:item="field">
+                                    <template if:true={field.isCheckbox}>
+                                        <lightning-combobox
+                                            label={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-p-vertical_small"
+                                            key={field.evisortFieldDefinitionName}
+                                            value={field.picklistValueSelected}
+                                            options={field.picklistValues}
+                                            data-id={field.evisortFieldValueId}
+                                            onchange={handleCheckboxChange}
+                                            disabled={field.readOnly}
+                                        >
+                                        </lightning-combobox>
+                                    </template>
+                                    <template if:true={field.isDate}>
+                                        <lightning-input
+                                            type="date"
+                                            label={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-p-vertical_small"
+                                            key={field.evisortFieldDefinitionName}
+                                            value={field.dateField}
+                                            data-id={field.evisortFieldValueId}
+                                            onchange={handleDateChange}
+                                            disabled={field.readOnly}
+                                        >
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={field.isNumber}>
+                                        <lightning-input
+                                            type="number"
+                                            label={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-p-vertical_small"
+                                            key={field.evisortFieldDefinitionName}
+                                            value={field.numberField}
+                                            data-id={field.evisortFieldValueId}
+                                            onblur={handleNumberChange}
+                                            disabled={field.readOnly}
+                                        >
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={field.isPicklist}>
+                                        <lightning-combobox
+                                            label={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-p-vertical_small"
+                                            key={field.evisortFieldDefinitionName}
+                                            value={field.picklistValueSelected}
+                                            options={field.picklistValues}
+                                            data-id={field.evisortFieldValueId}
+                                            onchange={handlePicklistChange}
+                                            disabled={field.readOnly}
+                                        >
+                                        </lightning-combobox>
+                                    </template>
+                                    <template if:true={field.isText}>
+                                        <lightning-input
+                                            type="text"
+                                            label={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-p-vertical_small"
+                                            key={field.evisortFieldDefinitionName}
+                                            value={field.textField}
+                                            data-id={field.evisortFieldValueId}
+                                            onblur={handleTextChange}
+                                            disabled={field.readOnly}
+                                        >
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={field.isMultiPicklist}>
+                                        <div
+                                            key={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-var-p-vertical_small"
+                                        >
+                                            <c-multi-select-combobox
+                                                picklistlabel={field.evisortFieldDefinitionName}
+                                                options={field.picklistValues}
+                                                values={field.multiPicklistValueSelected}
+                                                key={field.evisortFieldDefinitionName}
+                                                data-id={field.evisortFieldValueId}
+                                                onmultiselectchange={handleMultiPicklistChange}
+                                                row-disable ={field.readOnly}
+                                            ></c-multi-select-combobox>
+                                        </div>
+                                    </template>
+                                    <template if:true={field.isProvision}>
+                                        <div
+                                            key={field.evisortFieldDefinitionName}
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_2-of-2 slds-large-size_3-of-3 slds-var-p-vertical_small"
+                                        >
+                                            <div class="provision-header">{field.evisortFieldDefinitionName}</div>
+                                            <p class="provision">
+                                                <template iterator:it={field.parts}>
+                                                    <span key={it.value.index}>
+                                                        {it.value.value}
+                                                        <hr if:false={it.last}></hr>
+                                                    </span>
+                                                </template>
+                                            </p>
+                                        </div>
+                                    </template>
+                                </template>
+                            </div>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </template>
+            <div class="spinner" if:true={isSaving}>
+                <lightning-spinner alternative-text={label.adminSaveAndApply} size="large"></lightning-spinner>
+            </div>
+        </div>
+    </lightning-card>
+</template>

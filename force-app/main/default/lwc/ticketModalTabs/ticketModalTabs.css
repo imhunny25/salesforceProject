@@ -1,0 +1,35 @@
+.content-area {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 32rem;
+}
+
+.form-wrapper {
+    flex-grow: 1;
+}
+
+.section-border_bottom {
+    border-bottom: 1px solid rgb(182, 182, 182);
+}
+
+.section-border_bottom:last-of-type {
+    border-bottom: none;
+}
+
+.editing-controls {
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+}
+
+.icon_unsaved-error {
+    --sds-c-icon-color-foreground-default: white;
+    --sds-c-icon-color-background: rgb(186, 5, 23);
+}
+
+.wrapper_unsaved-changes {
+    position: sticky;
+    bottom: 5rem;
+    z-index: 100;
+}

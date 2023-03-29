@@ -1,0 +1,43 @@
+<template>
+    <template if:true={isMultipleFiles}>
+        <template if:true={isfilesData}>
+                <c-intake-form-document-upload 
+                object-api-name={objectApiName}
+                content-document-data={filesData} 
+                multi-select='true'
+                accepted-file-types={acceptedFileTypes}
+                accepted-file-format={acceptedFormats}
+                is-multiple-files={isMultipleFiles}
+                multiple-files = {multipleFiles}
+                onfileuploaded = {dispatchDocumentEvent}
+                allowed-file-types={allowedFileTypes}
+                allowed-file-type-rule={allowedFileTypeRule}
+                isrequired ={isrequired}
+                onfileremoved ={removefileHandler}
+                attachment-files={attachmentFiles}
+                is-edit-mode={isEditMode}
+                data-fieldfile
+                >
+                </c-intake-form-document-upload>
+            </template>
+    </template>
+   
+    <template if:false={isMultipleFiles}>
+            <template if:true={isfilesData}>
+                <c-intake-form-document-upload 
+                content-document-data={filesData} 
+                multi-select='false'
+                accepted-file-types ={acceptedFileTypes}
+                accepted-file-format ={acceptedFormats}
+                is-multiple-files ={isMultipleFiles}
+                is-multiple-uploaded ={isMultipleUploaded}
+                multiple-files = {multipleFiles}
+                onfileuploaded ={dispatchDocumentEvent}
+                object-api-name ={objectApiName}
+                is-edit-mode ={isEditMode}
+                onfileremoved ={removefileHandler}
+                >
+                </c-intake-form-document-upload>
+            </template>
+    </template>
+</template>

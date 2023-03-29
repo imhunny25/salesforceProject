@@ -1,0 +1,61 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-quick-action-panel header={headerTitle}>
+        <section class="content-area slds-p-around_medium slds-is-relative">
+            <template if:true={recordId}>
+                <c-intake-form-workflow-type
+                    if:true={showWorkflowType}
+                    ontypeselected={handleWorkflowNameSelection}
+                    record-id={recordId}
+                ></c-intake-form-workflow-type>
+            </template>
+
+            <c-intake-form-object-lookup
+                if:true={showObjectLookup}
+                child-objects={childObjects}
+                onselectedrecord={handleSelectedRecord}
+                onremovedrecord={handleRemovedRecord}
+                onlookuptotal={handleLookupTotal}
+            ></c-intake-form-object-lookup>
+
+            <c-intake-form-workflow-options
+                if:true={showWorkflowOptions}
+                workflow-name={workflowName}
+                workflow-id={workflowId}
+                has-company-paper={hasCompanyPaper}
+                has-counterparty-paper={hasCounterpartyPaper}
+                related-records={relatedRecords}
+                is-saving={isSaving}
+                object-api-name={objectApiName}
+            ></c-intake-form-workflow-options>
+        </section>
+        <div slot="footer">
+            <lightning-button
+                variant="neutral"
+                class="slds-m-right_small"
+                label={labels.ticketNewIntakeFormCancel}
+                onclick={close}
+            ></lightning-button>
+            <lightning-button
+                if:true={showWorkflowType}
+                variant="brand"
+                label={labels.ticketNewIntakeFormNext}
+                onclick={handleNext}
+                disabled={isNextDisabled}
+            ></lightning-button>
+            <lightning-button
+                if:true={showObjectLookup}
+                variant="brand"
+                label={labels.ticketNewIntakeFormNext}
+                onclick={handleNext}
+            ></lightning-button>
+            <lightning-button
+                if:true={showWorkflowOptions}
+                variant="brand"
+                label={labels.ticketNewIntakeFormSave}
+                onclick={save}
+                disabled={isSaveBtnDisabled}
+            ></lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

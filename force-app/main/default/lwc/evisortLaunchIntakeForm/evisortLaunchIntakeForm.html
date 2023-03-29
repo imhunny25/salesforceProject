@@ -1,0 +1,43 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-quick-action-panel header={label.adminLaunchIntakeFormsHeader}>
+        <div style="min-height: 200px; position: relative;">
+            <template if:true={isLoading}>
+                <lightning-spinner variant="brand"></lightning-spinner>
+            </template>
+            <template if:false={isLoading}>
+                <template if:true={hasSettings}>
+                    <div if:false={isWorkspaceSet} class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                        <h2>{label.adminLaunchIntakeFormsNoWorkspaceError}</h2>
+                    </div>
+                    <div if:true={hasNoOptions} class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                        <h2>{label.adminLaunchIntakeFormsNoOptionsError}</h2>
+                    </div>
+                </template>
+                  
+                <lightning-combobox
+                    options={options}
+                    value={selectedForm}
+                    onchange={handleChange}
+                ></lightning-combobox>
+                <div class="slds-scoped-notification slds-media slds-media_center slds-scoped-notification_light slds-m-vertical_medium" role="status">
+                  <div class="slds-media__figure">
+                      <span class="slds-icon_container slds-icon-utility-info" title="information">
+                          <lightning-icon icon-name="utility:info"></lightning-icon>
+                          <span class="slds-assistive-text">information</span>
+                      </span>
+                  </div>
+                  <div class="slds-media__body">
+                      <p if:true={hasMultipleOptions}>{label.adminLaunchIntakeFormsMultiple}</p>
+                      <p if:false={hasMultipleOptions}>{label.adminLaunchIntakeFormsInfo}</p>
+                  </div>
+              </div>
+            </template>
+        </div>
+
+        <div slot="footer">
+          <lightning-button variant="neutral" label={label.adminCancel} onclick={handleCancelClick}></lightning-button>
+          <lightning-button variant="brand" label={label.adminLaunchIntakeFormsSubmit} class="slds-m-left_x-small" disabled={isValid} onclick={handleSubmitClick}></lightning-button>
+        </div>
+      </lightning-quick-action-panel>
+</template>

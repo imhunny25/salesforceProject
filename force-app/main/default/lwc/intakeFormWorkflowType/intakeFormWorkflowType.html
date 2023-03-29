@@ -1,0 +1,52 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner variant="brand" size="medium"></lightning-spinner>
+    </template>
+    <template if:false={isLoading}>
+        <div if:true={error} class="slds-m-bottom_medium slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <h2>{error}</h2>
+        </div>
+        <!-- Search -->
+        <lightning-input
+            name="enter-search"
+            variant="label-hidden"
+            placeholder={labels.ticketSearchIntakeFormPlaceholder}
+            type="search"
+            class="slds-m-bottom_medium"
+            onchange={handleSearch}
+        ></lightning-input>
+
+        <!-- Form Options -->
+        <template if:true={workflowTypeOptions}>
+            <template if:false={searchWithNoResults}>
+                <ul class="intake-options">
+                    <template for:each={workflows} for:item="option">
+                        <li key={option.id} data-option={option.id} onclick={handleOptionSelected}>
+                            <span class="select">
+                                <lightning-icon
+                                    if:true={option.selected}
+                                    icon-name="utility:check"
+                                    alternative-text="Selected"
+                                    title="Selected"
+                                    size="x-small"
+                                    class="slds-m-right_small"
+                                ></lightning-icon>
+                            </span>
+                            <span class="label">{option.label}</span>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+            <template if:true={searchWithNoResults}>
+                <c-scoped-notification light-theme state="info">
+                    <p slot="body">{labels.ticketNoSearchResults}</p>
+                </c-scoped-notification>
+            </template>
+        </template>
+        <template if:false={hasWorkflows}>
+            <c-scoped-notification light-theme state="info">
+                <p slot="body">{labels.ticketNoAvailableWorkflows}</p>
+            </c-scoped-notification>
+        </template>
+    </template>
+</template>
